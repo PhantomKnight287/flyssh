@@ -1,0 +1,15 @@
+# created by virtualenv automatically
+Lib
+Scripts
+
+__pycache__
+
+pyvenv.cfg
+
+*.http
+
+# *.sqlite3
+
+.env
+*.env*
+!.env.example
