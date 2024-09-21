@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { SignupDTO } from './dto/signup.dto';
 import {
-  ApiBearerAuth, ApiConflictResponse,
+  ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -38,13 +38,12 @@ export class AuthController {
     return await this.authService.login(body);
   }
 
-
   @ApiOperation({
     summary: 'Signup',
     description: 'Signup',
   })
   @ApiOkResponse({
-    type: SignupEntity
+    type: SignupEntity,
   })
   @ApiConflictResponse({
     type: GenericErrorEntity,

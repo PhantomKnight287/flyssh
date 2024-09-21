@@ -5,6 +5,7 @@ import * as morgan from 'morgan';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { CustomValidationPipe } from './pipes/validation/validation.pipe';
+import { writeFileSync } from 'node:fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,6 +34,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+  writeFileSync('./openapi.spec.json', JSON.stringify(document, undefined, 2));
   app.use(
     '/reference',
     apiReference({
