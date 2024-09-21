@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String @id @unique
+  name          String
+  username      String @unique
+  password      String
+  encodedSecret String @map("encoded_secret")
+
+  hosts Host[]
+  keys  Key[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Host {
+  id       String  @id @unique
+  label    String
+  hostname String
+  username String
+  password String?
+  key      Key     @relation(fields: [keyId], references: [id])
+  keyId    String  @map("key_id")
+  owner    User    @relation(fields: [ownerId], references: [id])
+  ownerId  String  @map("owner_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  @@map("hosts")
+}
+
+model Key {
+  id         String  @id @unique
+  label      String
+  value      String
+  passphrase String?
+  hosts      Host[]
+  owner      User    @relation(fields: [ownerId], references: [id])
+  ownerId    String  @map("owner_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  @@map("keys")
+}
