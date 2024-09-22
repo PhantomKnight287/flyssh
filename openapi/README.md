@@ -48,13 +48,12 @@ import 'package:openapi/openapi.dart';
 
 
 final api = Openapi().getAuthenticationApi();
-final LoginDTO loginDTO = ; // LoginDTO | 
 
 try {
-    final response = await api.authControllerLogin(loginDTO);
+    final response = await api.authControllerGetCurrentUser();
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling AuthenticationApi->authControllerLogin: $e\n");
+    print("Exception when calling AuthenticationApi->authControllerGetCurrentUser: $e\n");
 }
 
 ```
@@ -65,6 +64,7 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*AuthenticationApi*](doc/AuthenticationApi.md) | [**authControllerGetCurrentUser**](doc/AuthenticationApi.md#authcontrollergetcurrentuser) | **GET** /auth/@me | Get current user
 [*AuthenticationApi*](doc/AuthenticationApi.md) | [**authControllerLogin**](doc/AuthenticationApi.md#authcontrollerlogin) | **POST** /auth/login | Login
 [*AuthenticationApi*](doc/AuthenticationApi.md) | [**authControllerRegister**](doc/AuthenticationApi.md#authcontrollerregister) | **POST** /auth/sign-up | Signup
 [*DefaultApi*](doc/DefaultApi.md) | [**appControllerGetHello**](doc/DefaultApi.md#appcontrollergethello) | **GET** / | 

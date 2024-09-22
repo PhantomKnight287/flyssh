@@ -11,15 +11,19 @@ part 'user_entity.g.dart';
 /// UserEntity
 ///
 /// Properties:
-/// * [username] 
+/// * [id] 
 /// * [name] 
+/// * [username] 
 @BuiltValue()
 abstract class UserEntity implements Built<UserEntity, UserEntityBuilder> {
-  @BuiltValueField(wireName: r'username')
-  String get username;
+  @BuiltValueField(wireName: r'id')
+  String get id;
 
   @BuiltValueField(wireName: r'name')
   String get name;
+
+  @BuiltValueField(wireName: r'username')
+  String get username;
 
   UserEntity._();
 
@@ -44,14 +48,19 @@ class _$UserEntitySerializer implements PrimitiveSerializer<UserEntity> {
     UserEntity object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
-    yield r'username';
+    yield r'id';
     yield serializers.serialize(
-      object.username,
+      object.id,
       specifiedType: const FullType(String),
     );
     yield r'name';
     yield serializers.serialize(
       object.name,
+      specifiedType: const FullType(String),
+    );
+    yield r'username';
+    yield serializers.serialize(
+      object.username,
       specifiedType: const FullType(String),
     );
   }
@@ -77,12 +86,12 @@ class _$UserEntitySerializer implements PrimitiveSerializer<UserEntity> {
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
-        case r'username':
+        case r'id':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(String),
           ) as String;
-          result.username = valueDes;
+          result.id = valueDes;
           break;
         case r'name':
           final valueDes = serializers.deserialize(
@@ -90,6 +99,13 @@ class _$UserEntitySerializer implements PrimitiveSerializer<UserEntity> {
             specifiedType: const FullType(String),
           ) as String;
           result.name = valueDes;
+          break;
+        case r'username':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.username = valueDes;
           break;
         default:
           unhandled.add(key);

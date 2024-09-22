@@ -1,8 +1,16 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { SignupDTO } from './dto/signup.dto';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -13,6 +21,9 @@ import {
 import { LoginEntity } from './entity/login.entity';
 import { GenericErrorEntity } from '../dto/generic-error.dto';
 import { SignupEntity } from './entity/signup.entity';
+import { Auth } from 'src/decorators/auth/auth.decorator';
+import { User } from '@prisma/client';
+import { UserEntity } from './entity/user.entity';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -51,5 +62,19 @@ export class AuthController {
   @Post('sign-up')
   async register(@Body() body: SignupDTO) {
     return await this.authService.signup(body);
+  }
+
+  @ApiOperation({
+    summary: 'Get current user',
+    description: 'Get current user',
+  })
+  @ApiBearerAuth('JWT-auth')
+  @Get('@me')
+  @ApiNotFoundResponse({ type: GenericErrorEntity })
+  @ApiOkResponse({
+    type: UserEntity,
+  })
+  async getCurrentUser(@Auth() auth: User) {
+    return this.authService.hydrate(auth.id);
   }
 }

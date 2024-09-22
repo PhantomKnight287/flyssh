@@ -8,16 +8,20 @@ part of 'user_entity.dart';
 
 class _$UserEntity extends UserEntity {
   @override
-  final String username;
+  final String id;
   @override
   final String name;
+  @override
+  final String username;
 
   factory _$UserEntity([void Function(UserEntityBuilder)? updates]) =>
       (new UserEntityBuilder()..update(updates))._build();
 
-  _$UserEntity._({required this.username, required this.name}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(username, r'UserEntity', 'username');
+  _$UserEntity._({required this.id, required this.name, required this.username})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, r'UserEntity', 'id');
     BuiltValueNullFieldError.checkNotNull(name, r'UserEntity', 'name');
+    BuiltValueNullFieldError.checkNotNull(username, r'UserEntity', 'username');
   }
 
   @override
@@ -31,15 +35,17 @@ class _$UserEntity extends UserEntity {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is UserEntity &&
-        username == other.username &&
-        name == other.name;
+        id == other.id &&
+        name == other.name &&
+        username == other.username;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
-    _$hash = $jc(_$hash, username.hashCode);
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, name.hashCode);
+    _$hash = $jc(_$hash, username.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -47,8 +53,9 @@ class _$UserEntity extends UserEntity {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'UserEntity')
-          ..add('username', username)
-          ..add('name', name))
+          ..add('id', id)
+          ..add('name', name)
+          ..add('username', username))
         .toString();
   }
 }
@@ -56,13 +63,17 @@ class _$UserEntity extends UserEntity {
 class UserEntityBuilder implements Builder<UserEntity, UserEntityBuilder> {
   _$UserEntity? _$v;
 
-  String? _username;
-  String? get username => _$this._username;
-  set username(String? username) => _$this._username = username;
+  String? _id;
+  String? get id => _$this._id;
+  set id(String? id) => _$this._id = id;
 
   String? _name;
   String? get name => _$this._name;
   set name(String? name) => _$this._name = name;
+
+  String? _username;
+  String? get username => _$this._username;
+  set username(String? username) => _$this._username = username;
 
   UserEntityBuilder() {
     UserEntity._defaults(this);
@@ -71,8 +82,9 @@ class UserEntityBuilder implements Builder<UserEntity, UserEntityBuilder> {
   UserEntityBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
-      _username = $v.username;
+      _id = $v.id;
       _name = $v.name;
+      _username = $v.username;
       _$v = null;
     }
     return this;
@@ -95,10 +107,11 @@ class UserEntityBuilder implements Builder<UserEntity, UserEntityBuilder> {
   _$UserEntity _build() {
     final _$result = _$v ??
         new _$UserEntity._(
-            username: BuiltValueNullFieldError.checkNotNull(
-                username, r'UserEntity', 'username'),
+            id: BuiltValueNullFieldError.checkNotNull(id, r'UserEntity', 'id'),
             name: BuiltValueNullFieldError.checkNotNull(
-                name, r'UserEntity', 'name'));
+                name, r'UserEntity', 'name'),
+            username: BuiltValueNullFieldError.checkNotNull(
+                username, r'UserEntity', 'username'));
     replace(_$result);
     return _$result;
   }

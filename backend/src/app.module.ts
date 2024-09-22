@@ -13,6 +13,9 @@ import { HostsModule } from './resources/hosts/hosts.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).exclude('/auth/(.*)').forRoutes('*');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/auth/(login|sign-up)')
+      .forRoutes('*');
   }
 }

@@ -9,9 +9,49 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**authControllerGetCurrentUser**](AuthenticationApi.md#authcontrollergetcurrentuser) | **GET** /auth/@me | Get current user
 [**authControllerLogin**](AuthenticationApi.md#authcontrollerlogin) | **POST** /auth/login | Login
 [**authControllerRegister**](AuthenticationApi.md#authcontrollerregister) | **POST** /auth/sign-up | Signup
 
+
+# **authControllerGetCurrentUser**
+> UserEntity authControllerGetCurrentUser()
+
+Get current user
+
+Get current user
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getAuthenticationApi();
+
+try {
+    final response = api.authControllerGetCurrentUser();
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling AuthenticationApi->authControllerGetCurrentUser: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**UserEntity**](UserEntity.md)
+
+### Authorization
+
+[JWT-auth](../README.md#JWT-auth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authControllerLogin**
 > LoginEntity authControllerLogin(loginDTO)

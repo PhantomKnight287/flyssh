@@ -7,13 +7,16 @@ import { SignupDTO } from './dto/signup.dto';
 import { createId } from '@paralleldrive/cuid2';
 import { prisma } from 'src/db';
 import { encryptionManager } from '../../encryption';
+import { plainToInstance } from 'class-transformer';
+import { UserEntity } from './entity/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(private service: ConfigService) {}
 
   async login(body: LoginDTO) {
-    const { password, username } = body;
+    console.log(body);
+    const { password, username, masterkey } = body;
     const user = await prisma.user.findFirst({
       where: { username: { equals: username, mode: 'insensitive' } },
     });
@@ -27,7 +30,7 @@ export class AuthService {
     if (isPasswordCorrect === false)
       throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
     const decodedData = await encryptionManager
-      .decrypt(user.encodedSecret, body.masterkey, false)
+      .decrypt(user.encodedSecret, masterkey, false)
       .catch(() => null);
     if (decodedData == null || decodedData !== user.username)
       throw new HttpException('Incorrect MasterKey', HttpStatus.UNAUTHORIZED);
@@ -90,5 +93,18 @@ export class AuthService {
     } catch (e) {
       throw Error('Unauthorized');
     }
+  }
+
+  async hydrate(userId: string) {
+    const user = await prisma.user.findFirst({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+      },
+    });
+    if (!user) throw new HttpException('No user found', HttpStatus.NOT_FOUND);
+    return plainToInstance(UserEntity, user);
   }
 }

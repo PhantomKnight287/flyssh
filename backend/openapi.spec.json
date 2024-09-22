@@ -108,6 +108,44 @@
         ]
       }
     },
+    "/auth/@me": {
+      "get": {
+        "operationId": "AuthController_getCurrentUser",
+        "summary": "Get current user",
+        "description": "Get current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserEntity"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericErrorEntity"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
     "/hosts": {
       "post": {
         "operationId": "HostsController_create",
@@ -399,16 +437,20 @@
       "UserEntity": {
         "type": "object",
         "properties": {
-          "username": {
+          "id": {
             "type": "string"
           },
           "name": {
             "type": "string"
+          },
+          "username": {
+            "type": "string"
           }
         },
         "required": [
-          "username",
-          "name"
+          "id",
+          "name",
+          "username"
         ]
       },
       "LoginEntity": {
