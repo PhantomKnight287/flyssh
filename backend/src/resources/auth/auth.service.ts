@@ -15,7 +15,6 @@ export class AuthService {
   constructor(private service: ConfigService) {}
 
   async login(body: LoginDTO) {
-    console.log(body);
     const { password, username, masterkey } = body;
     const user = await prisma.user.findFirst({
       where: { username: { equals: username, mode: 'insensitive' } },

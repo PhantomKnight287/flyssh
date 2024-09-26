@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   dio: ^5.7.0
+  error_or: ^0.4.0
   flutter:
     sdk: flutter
   flutter_secure_storage: ^9.2.2
@@ -15,6 +16,7 @@ dependencies:
   google_fonts: ^6.2.1
   openapi:
     path: ../openapi
+  toastification: ^2.3.0
 
 dev_dependencies:
   flutter_test:

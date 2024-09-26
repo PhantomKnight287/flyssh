@@ -2,54 +2,84 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flyssh/components/custom_cupertino_route.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
+import 'package:flyssh/screens/auth/login/presentation/main.dart';
 import 'package:flyssh/screens/auth/service/main.dart';
-import 'package:flyssh/screens/auth/sign_up/presentation/main.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
 import 'package:toastification/toastification.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
-  bool _isMasterKeyVisible = false;
   bool _loading = false;
-  final TextEditingController _usernameController = TextEditingController(), _passwordController = TextEditingController(), _masterKeyController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController(), _passwordController = TextEditingController(), _nameController = TextEditingController();
 
-  Future<void> _login() async {
+  Future<void> _signUp() async {
     if (!_formKey.currentState!.validate() || _loading) return;
+
     setState(() {
       _loading = true;
     });
-    final data = await AuthenticationService.login(
-      LoginDTO(
-        (b) {
-          b
-            ..masterkey = _masterKeyController.text
-            ..password = _passwordController.text
-            ..username = _usernameController.text
-            ..build();
-        },
-      ),
-    );
-    setState(() {
-      _loading = false;
-    });
-    if (data.hasError) {
-      showErrorToast(data.error);
-      return;
+    try {
+      final data = await AuthenticationService.signUp(
+        SignupDTO(
+          (b) {
+            b
+              ..password = _passwordController.text
+              ..username = _usernameController.text
+              ..name = _nameController.text
+              ..build();
+          },
+        ),
+      );
+      TextInput.finishAutofillContext();
+      await const FlutterSecureStorage(
+        aOptions: AndroidOptions(
+          encryptedSharedPreferences: true,
+        ),
+      ).write(
+        key: AUTH_TOKEN_KEY,
+        value: data!.token,
+      );
+      await const FlutterSecureStorage(
+        aOptions: AndroidOptions(
+          encryptedSharedPreferences: true,
+        ),
+      ).write(
+        key: MASTER_KEY_KEY,
+        value: data.masterkey,
+      );
+    } on DioException catch (e) {
+      final message = getErrorMessage(e.response?.data);
+      toastification.show(
+        title: const Text(
+          "An error occurred",
+        ),
+        description: Text(message),
+        type: ToastificationType.error,
+        style: ToastificationStyle.minimal,
+        autoCloseDuration: const Duration(
+          seconds: 3,
+        ),
+        showProgressBar: false,
+      );
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
-    TextInput.finishAutofillContext();
   }
 
   @override
@@ -86,6 +116,31 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Text(
+                        "Name",
+                        style: TextStyle(
+                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Gap(
+                        BASE_SPACE * 2,
+                      ),
+                      InputField(
+                        hintText: "John Doe",
+                        keyboardType: TextInputType.name,
+                        controller: _nameController,
+                        autoFillHints: const [
+                          AutofillHints.name,
+                        ],
+                        validator: (p0) {
+                          if (p0 == null || p0.isEmpty) return "Please enter your name";
+                          return null;
+                        },
+                      ),
+                      const Gap(
+                        BASE_SPACE * 4,
+                      ),
                       Text(
                         "Username",
                         style: TextStyle(
@@ -145,49 +200,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const Gap(
-                        BASE_SPACE * 4,
-                      ),
-                      Text(
-                        "Master Key",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "*********",
-                        controller: _masterKeyController,
-                        obscureText: !_isMasterKeyVisible,
-                        keyboardType: TextInputType.name,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isMasterKeyVisible ? Icons.visibility_off : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isMasterKeyVisible = !_isMasterKeyVisible;
-                            });
-                          },
-                        ),
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your master key";
-                          return null;
-                        },
-                      ),
-                      const Gap(
                         BASE_SPACE * 6,
                       ),
                       ElevatedButton(
-                        onPressed: _login,
+                        onPressed: _signUp,
                         child: _loading
                             ? const CupertinoActivityIndicator(
                                 color: Colors.white,
                               )
                             : const Text(
-                                "Sign In",
+                                "Sign Up",
                               ),
                       )
                     ],
@@ -201,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Don't have an account?",
+                    "Already have an account?",
                   ),
                   TextButton(
                     onPressed: () {
@@ -209,13 +231,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         context,
                         CustomCupertinoRoute(
                           builder: (context) {
-                            return const SignUpScreen();
+                            return const LoginScreen();
                           },
                         ),
                       );
                     },
                     child: Text(
-                      "Sign up",
+                      "Sign in",
                       style: TextStyle(
                         color: Colors.blue.shade500,
                         letterSpacing: 0.5,

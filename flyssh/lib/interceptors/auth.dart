@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flyssh/constants/main.dart';
 
 class TokenInterceptor extends Interceptor {
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     const prefs = FlutterSecureStorage();
     String? token = await prefs.read(
-      key: "token",
+      key: AUTH_TOKEN_KEY,
     );
 
     if (token != null && token.isNotEmpty) {
