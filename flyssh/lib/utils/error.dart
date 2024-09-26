@@ -31,3 +31,20 @@ ToastificationItem showErrorToast(dynamic error) {
     showProgressBar: false,
   );
 }
+
+ToastificationItem showSuccessToast({String? title, String? description}) {
+  return toastification.show(
+    title: title != null
+        ? Text(
+            title,
+          )
+        : null,
+    description: description != null ? Text(description) : null,
+    type: ToastificationType.success,
+    style: ToastificationStyle.minimal,
+    autoCloseDuration: const Duration(
+      seconds: 3,
+    ),
+    showProgressBar: false,
+  );
+}

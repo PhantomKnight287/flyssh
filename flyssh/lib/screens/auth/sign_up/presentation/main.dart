@@ -2,12 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flyssh/components/custom_cupertino_route.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
+import 'package:flyssh/riverpod/user_provider.dart';
 import 'package:flyssh/screens/auth/login/presentation/main.dart';
-import 'package:flyssh/screens/auth/service/main.dart';
+import 'package:flyssh/services/auth/main.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
@@ -26,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _loading = false;
   final TextEditingController _usernameController = TextEditingController(), _passwordController = TextEditingController(), _nameController = TextEditingController();
 
-  Future<void> _signUp() async {
+  Future<void> _signUp(WidgetRef ref) async {
     if (!_formKey.currentState!.validate() || _loading) return;
 
     setState(() {
@@ -60,6 +62,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ).write(
         key: MASTER_KEY_KEY,
         value: data.masterkey,
+      );
+      ref.read(userNotifierProvider.notifier).login(
+            data.user.username,
+            data.user.name,
+            data.masterkey,
+          );
+      showSuccessToast(
+        description: "Welcome ${data.user.username}",
       );
     } on DioException catch (e) {
       final message = getErrorMessage(e.response?.data);
@@ -202,16 +212,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const Gap(
                         BASE_SPACE * 6,
                       ),
-                      ElevatedButton(
-                        onPressed: _signUp,
-                        child: _loading
-                            ? const CupertinoActivityIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                "Sign Up",
-                              ),
-                      )
+                      Consumer(builder: (context, ref, child) {
+                        return ElevatedButton(
+                          onPressed: () => _signUp(ref),
+                          child: _loading
+                              ? const CupertinoActivityIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  "Sign Up",
+                                ),
+                        );
+                      })
                     ],
                   ),
                 ),

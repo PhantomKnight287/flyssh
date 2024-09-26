@@ -1,16 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flyssh/components/custom_cupertino_route.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
-import 'package:flyssh/screens/auth/service/main.dart';
+import 'package:flyssh/riverpod/user_provider.dart';
+import 'package:flyssh/services/auth/main.dart';
 import 'package:flyssh/screens/auth/sign_up/presentation/main.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
-import 'package:toastification/toastification.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,11 +26,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   final TextEditingController _usernameController = TextEditingController(), _passwordController = TextEditingController(), _masterKeyController = TextEditingController();
 
-  Future<void> _login() async {
+  Future<void> _login(WidgetRef ref) async {
     if (!_formKey.currentState!.validate() || _loading) return;
     setState(() {
       _loading = true;
     });
+
     final data = await AuthenticationService.login(
       LoginDTO(
         (b) {
@@ -49,7 +50,16 @@ class _LoginScreenState extends State<LoginScreen> {
       showErrorToast(data.error);
       return;
     }
+    final body = data.value!.data;
     TextInput.finishAutofillContext();
+    ref.read(userNotifierProvider.notifier).login(
+          body!.user.username,
+          body.user.name,
+          _masterKeyController.text,
+        );
+    showSuccessToast(
+      description: "Welcome back ${body.user.name}",
+    );
   }
 
   @override
@@ -180,15 +190,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Gap(
                         BASE_SPACE * 6,
                       ),
-                      ElevatedButton(
-                        onPressed: _login,
-                        child: _loading
-                            ? const CupertinoActivityIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                "Sign In",
-                              ),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return ElevatedButton(
+                            onPressed: () => _login(ref),
+                            child: _loading
+                                ? const CupertinoActivityIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Text(
+                                    "Sign In",
+                                  ),
+                          );
+                        },
                       )
                     ],
                   ),
