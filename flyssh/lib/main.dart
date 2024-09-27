@@ -107,7 +107,6 @@ class MainApp extends StatelessWidget {
               fontSize: 14,
               color: Colors.black,
               fontWeight: FontWeight.w500,
-              letterSpacing: 1.25,
             ),
             bodySmall: GoogleFonts.inter(
               fontSize: 12,
@@ -121,6 +120,10 @@ class MainApp extends StatelessWidget {
               fontWeight: FontWeight.w400,
               letterSpacing: 1.5,
             ),
+          ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
           ),
         ),
         home: const ScreensSwitcher(),

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PartialHost {
   @ApiProperty()
@@ -13,6 +13,10 @@ export class PartialHost {
   @ApiProperty()
   @IsString()
   username: string;
+
+  @ApiProperty()
+  @IsNumber()
+  port: number;
 }
 
 export class Host extends PartialHost {

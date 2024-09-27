@@ -34,7 +34,6 @@ class UserNotifier extends _$UserNotifier {
   }
 
   Future<void> logout() async {
-    await Future.delayed(const Duration(seconds: 1));
     state = null;
   }
 }

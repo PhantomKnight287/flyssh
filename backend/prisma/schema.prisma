@@ -34,9 +34,10 @@ model Host {
   label    String
   hostname String
   username String
+  port     Int     @default(22)
   password String?
-  key      Key     @relation(fields: [keyId], references: [id])
-  keyId    String  @map("key_id")
+  key      Key?    @relation(fields: [keyId], references: [id])
+  keyId    String? @map("key_id")
   owner    User    @relation(fields: [ownerId], references: [id])
   ownerId  String  @map("owner_id")
 

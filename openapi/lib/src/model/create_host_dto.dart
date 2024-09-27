@@ -14,6 +14,7 @@ part 'create_host_dto.g.dart';
 /// * [label] 
 /// * [hostname] - Encrypted hostname
 /// * [username] - Encrypted username
+/// * [port] - The port at which sshd is running
 /// * [password] - Encrypted password
 /// * [keyId] - Id of key, existing or new
 @BuiltValue()
@@ -28,6 +29,10 @@ abstract class CreateHostDto implements Built<CreateHostDto, CreateHostDtoBuilde
   /// Encrypted username
   @BuiltValueField(wireName: r'username')
   String get username;
+
+  /// The port at which sshd is running
+  @BuiltValueField(wireName: r'port')
+  num get port;
 
   /// Encrypted password
   @BuiltValueField(wireName: r'password')
@@ -74,6 +79,11 @@ class _$CreateHostDtoSerializer implements PrimitiveSerializer<CreateHostDto> {
     yield serializers.serialize(
       object.username,
       specifiedType: const FullType(String),
+    );
+    yield r'port';
+    yield serializers.serialize(
+      object.port,
+      specifiedType: const FullType(num),
     );
     if (object.password != null) {
       yield r'password';
@@ -132,6 +142,13 @@ class _$CreateHostDtoSerializer implements PrimitiveSerializer<CreateHostDto> {
             specifiedType: const FullType(String),
           ) as String;
           result.username = valueDes;
+          break;
+        case r'port':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(num),
+          ) as num;
+          result.port = valueDes;
           break;
         case r'password':
           final valueDes = serializers.deserialize(

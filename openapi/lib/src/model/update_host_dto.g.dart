@@ -14,6 +14,8 @@ class _$UpdateHostDto extends UpdateHostDto {
   @override
   final String? username;
   @override
+  final num? port;
+  @override
   final String? password;
   @override
   final String? keyId;
@@ -22,7 +24,12 @@ class _$UpdateHostDto extends UpdateHostDto {
       (new UpdateHostDtoBuilder()..update(updates))._build();
 
   _$UpdateHostDto._(
-      {this.label, this.hostname, this.username, this.password, this.keyId})
+      {this.label,
+      this.hostname,
+      this.username,
+      this.port,
+      this.password,
+      this.keyId})
       : super._();
 
   @override
@@ -39,6 +46,7 @@ class _$UpdateHostDto extends UpdateHostDto {
         label == other.label &&
         hostname == other.hostname &&
         username == other.username &&
+        port == other.port &&
         password == other.password &&
         keyId == other.keyId;
   }
@@ -49,6 +57,7 @@ class _$UpdateHostDto extends UpdateHostDto {
     _$hash = $jc(_$hash, label.hashCode);
     _$hash = $jc(_$hash, hostname.hashCode);
     _$hash = $jc(_$hash, username.hashCode);
+    _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jc(_$hash, keyId.hashCode);
     _$hash = $jf(_$hash);
@@ -61,6 +70,7 @@ class _$UpdateHostDto extends UpdateHostDto {
           ..add('label', label)
           ..add('hostname', hostname)
           ..add('username', username)
+          ..add('port', port)
           ..add('password', password)
           ..add('keyId', keyId))
         .toString();
@@ -83,6 +93,10 @@ class UpdateHostDtoBuilder
   String? get username => _$this._username;
   set username(String? username) => _$this._username = username;
 
+  num? _port;
+  num? get port => _$this._port;
+  set port(num? port) => _$this._port = port;
+
   String? _password;
   String? get password => _$this._password;
   set password(String? password) => _$this._password = password;
@@ -101,6 +115,7 @@ class UpdateHostDtoBuilder
       _label = $v.label;
       _hostname = $v.hostname;
       _username = $v.username;
+      _port = $v.port;
       _password = $v.password;
       _keyId = $v.keyId;
       _$v = null;
@@ -128,6 +143,7 @@ class UpdateHostDtoBuilder
             label: label,
             hostname: hostname,
             username: username,
+            port: port,
             password: password,
             keyId: keyId);
     replace(_$result);

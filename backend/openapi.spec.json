@@ -533,6 +533,10 @@
             "type": "string",
             "description": "Encrypted username"
           },
+          "port": {
+            "type": "number",
+            "description": "The port at which sshd is running"
+          },
           "password": {
             "type": "string",
             "description": "Encrypted password",
@@ -546,7 +550,8 @@
         "required": [
           "label",
           "hostname",
-          "username"
+          "username",
+          "port"
         ]
       },
       "GenericResponseDto": {
@@ -571,12 +576,16 @@
           },
           "username": {
             "type": "string"
+          },
+          "port": {
+            "type": "number"
           }
         },
         "required": [
           "id",
           "label",
-          "username"
+          "username",
+          "port"
         ]
       },
       "Host": {
@@ -591,6 +600,9 @@
           "username": {
             "type": "string"
           },
+          "port": {
+            "type": "number"
+          },
           "password": {
             "type": "string",
             "nullable": true
@@ -599,7 +611,8 @@
         "required": [
           "id",
           "label",
-          "username"
+          "username",
+          "port"
         ]
       },
       "UpdateHostDto": {
@@ -615,6 +628,10 @@
           "username": {
             "type": "string",
             "description": "Encrypted username"
+          },
+          "port": {
+            "type": "number",
+            "description": "The port at which sshd is running"
           },
           "password": {
             "type": "string",

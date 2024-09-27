@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, ValidateIf } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateHostDto {
   @ApiProperty({})
@@ -26,6 +33,14 @@ export class CreateHostDto {
   })
   @IsNotEmpty({ message: 'Username must not be empty' })
   username: string;
+
+  @ApiProperty({
+    description: 'The port at which sshd is running',
+  })
+  @IsNumber(undefined, { message: 'port must be number' })
+  @IsPositive({ message: 'Port must be positive' })
+  @IsOptional()
+  port: number;
 
   @ApiProperty({
     description: 'Encrypted password',

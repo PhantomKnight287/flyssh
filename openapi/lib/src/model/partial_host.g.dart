@@ -13,16 +13,22 @@ class _$PartialHost extends PartialHost {
   final String label;
   @override
   final String username;
+  @override
+  final num port;
 
   factory _$PartialHost([void Function(PartialHostBuilder)? updates]) =>
       (new PartialHostBuilder()..update(updates))._build();
 
   _$PartialHost._(
-      {required this.id, required this.label, required this.username})
+      {required this.id,
+      required this.label,
+      required this.username,
+      required this.port})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'PartialHost', 'id');
     BuiltValueNullFieldError.checkNotNull(label, r'PartialHost', 'label');
     BuiltValueNullFieldError.checkNotNull(username, r'PartialHost', 'username');
+    BuiltValueNullFieldError.checkNotNull(port, r'PartialHost', 'port');
   }
 
   @override
@@ -38,7 +44,8 @@ class _$PartialHost extends PartialHost {
     return other is PartialHost &&
         id == other.id &&
         label == other.label &&
-        username == other.username;
+        username == other.username &&
+        port == other.port;
   }
 
   @override
@@ -47,6 +54,7 @@ class _$PartialHost extends PartialHost {
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, label.hashCode);
     _$hash = $jc(_$hash, username.hashCode);
+    _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -56,7 +64,8 @@ class _$PartialHost extends PartialHost {
     return (newBuiltValueToStringHelper(r'PartialHost')
           ..add('id', id)
           ..add('label', label)
-          ..add('username', username))
+          ..add('username', username)
+          ..add('port', port))
         .toString();
   }
 }
@@ -76,6 +85,10 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
   String? get username => _$this._username;
   set username(String? username) => _$this._username = username;
 
+  num? _port;
+  num? get port => _$this._port;
+  set port(num? port) => _$this._port = port;
+
   PartialHostBuilder() {
     PartialHost._defaults(this);
   }
@@ -86,6 +99,7 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
       _id = $v.id;
       _label = $v.label;
       _username = $v.username;
+      _port = $v.port;
       _$v = null;
     }
     return this;
@@ -112,7 +126,9 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
             label: BuiltValueNullFieldError.checkNotNull(
                 label, r'PartialHost', 'label'),
             username: BuiltValueNullFieldError.checkNotNull(
-                username, r'PartialHost', 'username'));
+                username, r'PartialHost', 'username'),
+            port: BuiltValueNullFieldError.checkNotNull(
+                port, r'PartialHost', 'port'));
     replace(_$result);
     return _$result;
   }

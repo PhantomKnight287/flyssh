@@ -5,7 +5,6 @@ import { prisma } from '../../db';
 import { createId } from '@paralleldrive/cuid2';
 import { plainToInstance } from 'class-transformer';
 import { Host, PartialHost } from './entities/host.entity';
-import { compareArrays } from '../../helpers';
 import { GenericResponseDto } from '../dto/generic-response.dto';
 
 @Injectable()
@@ -51,6 +50,7 @@ export class HostsService {
         id: true,
         label: true,
         username: true,
+        port: true,
       },
       orderBy: [
         {

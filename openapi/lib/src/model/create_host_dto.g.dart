@@ -14,6 +14,8 @@ class _$CreateHostDto extends CreateHostDto {
   @override
   final String username;
   @override
+  final num port;
+  @override
   final String? password;
   @override
   final String? keyId;
@@ -25,6 +27,7 @@ class _$CreateHostDto extends CreateHostDto {
       {required this.label,
       required this.hostname,
       required this.username,
+      required this.port,
       this.password,
       this.keyId})
       : super._() {
@@ -33,6 +36,7 @@ class _$CreateHostDto extends CreateHostDto {
         hostname, r'CreateHostDto', 'hostname');
     BuiltValueNullFieldError.checkNotNull(
         username, r'CreateHostDto', 'username');
+    BuiltValueNullFieldError.checkNotNull(port, r'CreateHostDto', 'port');
   }
 
   @override
@@ -49,6 +53,7 @@ class _$CreateHostDto extends CreateHostDto {
         label == other.label &&
         hostname == other.hostname &&
         username == other.username &&
+        port == other.port &&
         password == other.password &&
         keyId == other.keyId;
   }
@@ -59,6 +64,7 @@ class _$CreateHostDto extends CreateHostDto {
     _$hash = $jc(_$hash, label.hashCode);
     _$hash = $jc(_$hash, hostname.hashCode);
     _$hash = $jc(_$hash, username.hashCode);
+    _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jc(_$hash, keyId.hashCode);
     _$hash = $jf(_$hash);
@@ -71,6 +77,7 @@ class _$CreateHostDto extends CreateHostDto {
           ..add('label', label)
           ..add('hostname', hostname)
           ..add('username', username)
+          ..add('port', port)
           ..add('password', password)
           ..add('keyId', keyId))
         .toString();
@@ -93,6 +100,10 @@ class CreateHostDtoBuilder
   String? get username => _$this._username;
   set username(String? username) => _$this._username = username;
 
+  num? _port;
+  num? get port => _$this._port;
+  set port(num? port) => _$this._port = port;
+
   String? _password;
   String? get password => _$this._password;
   set password(String? password) => _$this._password = password;
@@ -111,6 +122,7 @@ class CreateHostDtoBuilder
       _label = $v.label;
       _hostname = $v.hostname;
       _username = $v.username;
+      _port = $v.port;
       _password = $v.password;
       _keyId = $v.keyId;
       _$v = null;
@@ -141,6 +153,8 @@ class CreateHostDtoBuilder
                 hostname, r'CreateHostDto', 'hostname'),
             username: BuiltValueNullFieldError.checkNotNull(
                 username, r'CreateHostDto', 'username'),
+            port: BuiltValueNullFieldError.checkNotNull(
+                port, r'CreateHostDto', 'port'),
             password: password,
             keyId: keyId);
     replace(_$result);

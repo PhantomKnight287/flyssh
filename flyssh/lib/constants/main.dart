@@ -27,3 +27,5 @@ const BASE_SPACE = 4.0;
 // these are to prevent magic strings in codebase
 const AUTH_TOKEN_KEY = "token";
 const MASTER_KEY_KEY = "master_key";
+
+const PAGE_SIZE = 20;

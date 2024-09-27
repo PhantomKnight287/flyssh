@@ -9,6 +9,7 @@ import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/riverpod/user_provider.dart';
 import 'package:flyssh/screens/auth/login/presentation/main.dart';
+import 'package:flyssh/screens/auth/master_key/presentation/main.dart';
 import 'package:flyssh/services/auth/main.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
@@ -71,6 +72,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
       showSuccessToast(
         description: "Welcome ${data.user.username}",
       );
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          CustomCupertinoRoute(
+            builder: (context) {
+              return MasterKeyScreen(masterKey: data.masterkey);
+            },
+          ),
+          (route) => false,
+        );
+      }
     } on DioException catch (e) {
       final message = getErrorMessage(e.response?.data);
       toastification.show(
@@ -105,14 +116,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Lets sign you in",
+                "Lets get you started",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Gap(
                 BASE_SPACE,
               ),
               Text(
-                "Welcome back! We're glad to see you again. Please enter your details to sign in.",
+                "Welcome! We're glad to see you here. Please enter your details to create an account.",
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       fontWeight: FontWeight.normal,
                     ),

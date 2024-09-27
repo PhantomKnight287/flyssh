@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **label** | **String** |  | [optional] 
 **hostname** | **String** | Encrypted hostname | [optional] 
 **username** | **String** | Encrypted username | [optional] 
+**port** | **num** | The port at which sshd is running | [optional] 
 **password** | **String** | Encrypted password | [optional] 
 **keyId** | **String** | Id of key, existing or new | [optional] 
 
