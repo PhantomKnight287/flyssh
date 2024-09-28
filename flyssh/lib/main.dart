@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/screens/switcher.dart';
+import 'package:flyssh/utils/device.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:toastification/toastification.dart';
 
@@ -20,7 +21,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ToastificationWrapper(
       child: MaterialApp(
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.light().copyWith(
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
@@ -37,9 +38,9 @@ class MainApp extends StatelessWidget {
                   ),
                 ),
               ),
-              padding: const WidgetStatePropertyAll(
+              padding: WidgetStatePropertyAll(
                 EdgeInsets.all(
-                  BASE_SPACE * 3,
+                  isPhone(context) ? BASE_SPACE * 3 : BASE_SPACE * 5,
                 ),
               ),
             ),
@@ -119,6 +120,12 @@ class MainApp extends StatelessWidget {
               color: Colors.black,
               fontWeight: FontWeight.w400,
               letterSpacing: 1.5,
+            ),
+            labelMedium: GoogleFonts.inter(
+              fontSize: 14,
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.25,
             ),
           ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(

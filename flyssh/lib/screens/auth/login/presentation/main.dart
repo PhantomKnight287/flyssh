@@ -8,6 +8,7 @@ import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/riverpod/user_provider.dart';
 import 'package:flyssh/services/auth/main.dart';
 import 'package:flyssh/screens/auth/sign_up/presentation/main.dart';
+import 'package:flyssh/utils/device.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
@@ -66,179 +67,187 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(
-            BASE_SPACE * 4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "Lets sign you in",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Gap(
-                BASE_SPACE,
-              ),
-              Text(
-                "Welcome back! We're glad to see you again. Please enter your details to sign in.",
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-              ),
-              const Gap(
-                BASE_SPACE * 5,
-              ),
-              Form(
-                key: _formKey,
-                child: AutofillGroup(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "Username",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "phantomknight287",
-                        keyboardType: TextInputType.name,
-                        controller: _usernameController,
-                        autoFillHints: const [
-                          AutofillHints.username,
-                        ],
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your username";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 4,
-                      ),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "*********",
-                        obscureText: !_isPasswordVisible,
-                        controller: _passwordController,
-                        keyboardType: TextInputType.name,
-                        autoFillHints: const [
-                          AutofillHints.password,
-                        ],
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your password";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 4,
-                      ),
-                      Text(
-                        "Master Key",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "*********",
-                        controller: _masterKeyController,
-                        obscureText: !_isMasterKeyVisible,
-                        keyboardType: TextInputType.name,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isMasterKeyVisible ? Icons.visibility_off : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isMasterKeyVisible = !_isMasterKeyVisible;
-                            });
-                          },
-                        ),
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your master key";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 6,
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          return ElevatedButton(
-                            onPressed: () => _login(ref),
-                            child: _loading
-                                ? const CupertinoActivityIndicator(
-                                    color: Colors.white,
-                                  )
-                                : const Text(
-                                    "Sign In",
-                                  ),
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const Gap(
+      body: SingleChildScrollView(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 400,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(
                 BASE_SPACE * 4,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: isPhone(context) ? MainAxisAlignment.start : MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account?",
+                  Text(
+                    "Lets sign you in",
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        CustomCupertinoRoute(
-                          builder: (context) {
-                            return const SignUpScreen();
-                          },
+                  const Gap(
+                    BASE_SPACE,
+                  ),
+                  Text(
+                    "Welcome back! We're glad to see you again. Please enter your details to sign in.",
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.normal,
                         ),
-                      );
-                    },
-                    child: Text(
-                      "Sign up",
-                      style: TextStyle(
-                        color: Colors.blue.shade500,
-                        letterSpacing: 0.5,
+                  ),
+                  const Gap(
+                    BASE_SPACE * 5,
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: AutofillGroup(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            "Username",
+                            style: TextStyle(
+                              fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Gap(
+                            BASE_SPACE * 2,
+                          ),
+                          InputField(
+                            hintText: "phantomknight287",
+                            keyboardType: TextInputType.name,
+                            controller: _usernameController,
+                            autoFillHints: const [
+                              AutofillHints.username,
+                            ],
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) return "Please enter your username";
+                              return null;
+                            },
+                          ),
+                          const Gap(
+                            BASE_SPACE * 4,
+                          ),
+                          Text(
+                            "Password",
+                            style: TextStyle(
+                              fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Gap(
+                            BASE_SPACE * 2,
+                          ),
+                          InputField(
+                            hintText: "*********",
+                            obscureText: !_isPasswordVisible,
+                            controller: _passwordController,
+                            keyboardType: TextInputType.name,
+                            autoFillHints: const [
+                              AutofillHints.password,
+                            ],
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) return "Please enter your password";
+                              return null;
+                            },
+                          ),
+                          const Gap(
+                            BASE_SPACE * 4,
+                          ),
+                          Text(
+                            "Master Key",
+                            style: TextStyle(
+                              fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Gap(
+                            BASE_SPACE * 2,
+                          ),
+                          InputField(
+                            hintText: "*********",
+                            controller: _masterKeyController,
+                            obscureText: !_isMasterKeyVisible,
+                            keyboardType: TextInputType.name,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isMasterKeyVisible ? Icons.visibility_off : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isMasterKeyVisible = !_isMasterKeyVisible;
+                                });
+                              },
+                            ),
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) return "Please enter your master key";
+                              return null;
+                            },
+                          ),
+                          const Gap(
+                            BASE_SPACE * 6,
+                          ),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              return ElevatedButton(
+                                onPressed: () => _login(ref),
+                                child: _loading
+                                    ? const CupertinoActivityIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text(
+                                        "Sign In",
+                                      ),
+                              );
+                            },
+                          )
+                        ],
                       ),
                     ),
+                  ),
+                  const Gap(
+                    BASE_SPACE * 4,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account?",
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            CustomCupertinoRoute(
+                              builder: (context) {
+                                return const SignUpScreen();
+                              },
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign up",
+                          style: TextStyle(
+                            color: Colors.blue.shade500,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
         ),
       ),

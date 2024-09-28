@@ -36,6 +36,7 @@ export class CreateHostDto {
 
   @ApiProperty({
     description: 'The port at which sshd is running',
+    required: false,
   })
   @IsNumber(undefined, { message: 'port must be number' })
   @IsPositive({ message: 'Port must be positive' })

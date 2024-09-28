@@ -32,7 +32,7 @@ abstract class CreateHostDto implements Built<CreateHostDto, CreateHostDtoBuilde
 
   /// The port at which sshd is running
   @BuiltValueField(wireName: r'port')
-  num get port;
+  num? get port;
 
   /// Encrypted password
   @BuiltValueField(wireName: r'password')
@@ -80,11 +80,13 @@ class _$CreateHostDtoSerializer implements PrimitiveSerializer<CreateHostDto> {
       object.username,
       specifiedType: const FullType(String),
     );
-    yield r'port';
-    yield serializers.serialize(
-      object.port,
-      specifiedType: const FullType(num),
-    );
+    if (object.port != null) {
+      yield r'port';
+      yield serializers.serialize(
+        object.port,
+        specifiedType: const FullType(num),
+      );
+    }
     if (object.password != null) {
       yield r'password';
       yield serializers.serialize(

@@ -108,168 +108,177 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       appBar: null,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(
-            BASE_SPACE * 4,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "Lets get you started",
-                style: Theme.of(context).textTheme.titleLarge,
+        child: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 400,
               ),
-              const Gap(
-                BASE_SPACE,
-              ),
-              Text(
-                "Welcome! We're glad to see you here. Please enter your details to create an account.",
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.normal,
+              child: Padding(
+                padding: const EdgeInsets.all(
+                  BASE_SPACE * 4,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "Lets get you started",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-              ),
-              const Gap(
-                BASE_SPACE * 5,
-              ),
-              Form(
-                key: _formKey,
-                child: AutofillGroup(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "Name",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "John Doe",
-                        keyboardType: TextInputType.name,
-                        controller: _nameController,
-                        autoFillHints: const [
-                          AutofillHints.name,
-                        ],
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your name";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 4,
-                      ),
-                      Text(
-                        "Username",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "phantomknight287",
-                        keyboardType: TextInputType.name,
-                        controller: _usernameController,
-                        autoFillHints: const [
-                          AutofillHints.username,
-                        ],
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your username";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 4,
-                      ),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(
-                        BASE_SPACE * 2,
-                      ),
-                      InputField(
-                        hintText: "*********",
-                        obscureText: !_isPasswordVisible,
-                        controller: _passwordController,
-                        keyboardType: TextInputType.name,
-                        autoFillHints: const [
-                          AutofillHints.password,
-                        ],
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                    const Gap(
+                      BASE_SPACE,
+                    ),
+                    Text(
+                      "Welcome! We're glad to see you here. Please enter your details to create an account.",
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.normal,
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                        validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter your password";
-                          return null;
-                        },
-                      ),
-                      const Gap(
-                        BASE_SPACE * 6,
-                      ),
-                      Consumer(builder: (context, ref, child) {
-                        return ElevatedButton(
-                          onPressed: () => _signUp(ref),
-                          child: _loading
-                              ? const CupertinoActivityIndicator(
-                                  color: Colors.white,
-                                )
-                              : const Text(
-                                  "Sign Up",
+                    ),
+                    const Gap(
+                      BASE_SPACE * 5,
+                    ),
+                    Form(
+                      key: _formKey,
+                      child: AutofillGroup(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "Name",
+                              style: TextStyle(
+                                fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Gap(
+                              BASE_SPACE * 2,
+                            ),
+                            InputField(
+                              hintText: "John Doe",
+                              keyboardType: TextInputType.name,
+                              controller: _nameController,
+                              autoFillHints: const [
+                                AutofillHints.name,
+                              ],
+                              validator: (p0) {
+                                if (p0 == null || p0.isEmpty) return "Please enter your name";
+                                return null;
+                              },
+                            ),
+                            const Gap(
+                              BASE_SPACE * 4,
+                            ),
+                            Text(
+                              "Username",
+                              style: TextStyle(
+                                fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Gap(
+                              BASE_SPACE * 2,
+                            ),
+                            InputField(
+                              hintText: "phantomknight287",
+                              keyboardType: TextInputType.name,
+                              controller: _usernameController,
+                              autoFillHints: const [
+                                AutofillHints.username,
+                              ],
+                              validator: (p0) {
+                                if (p0 == null || p0.isEmpty) return "Please enter your username";
+                                return null;
+                              },
+                            ),
+                            const Gap(
+                              BASE_SPACE * 4,
+                            ),
+                            Text(
+                              "Password",
+                              style: TextStyle(
+                                fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Gap(
+                              BASE_SPACE * 2,
+                            ),
+                            InputField(
+                              hintText: "*********",
+                              obscureText: !_isPasswordVisible,
+                              controller: _passwordController,
+                              keyboardType: TextInputType.name,
+                              autoFillHints: const [
+                                AutofillHints.password,
+                              ],
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
                                 ),
-                        );
-                      })
-                    ],
-                  ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                              ),
+                              validator: (p0) {
+                                if (p0 == null || p0.isEmpty) return "Please enter your password";
+                                return null;
+                              },
+                            ),
+                            const Gap(
+                              BASE_SPACE * 6,
+                            ),
+                            Consumer(builder: (context, ref, child) {
+                              return ElevatedButton(
+                                onPressed: () => _signUp(ref),
+                                child: _loading
+                                    ? const CupertinoActivityIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text(
+                                        "Sign Up",
+                                      ),
+                              );
+                            })
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Gap(
+                      BASE_SPACE * 4,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Already have an account?",
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              CustomCupertinoRoute(
+                                builder: (context) {
+                                  return const LoginScreen();
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Sign in",
+                            style: TextStyle(
+                              color: Colors.blue.shade500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
                 ),
               ),
-              const Gap(
-                BASE_SPACE * 4,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account?",
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        CustomCupertinoRoute(
-                          builder: (context) {
-                            return const LoginScreen();
-                          },
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Sign in",
-                      style: TextStyle(
-                        color: Colors.blue.shade500,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
+            ),
           ),
         ),
       ),

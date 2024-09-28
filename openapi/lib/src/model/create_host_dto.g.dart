@@ -14,7 +14,7 @@ class _$CreateHostDto extends CreateHostDto {
   @override
   final String username;
   @override
-  final num port;
+  final num? port;
   @override
   final String? password;
   @override
@@ -27,7 +27,7 @@ class _$CreateHostDto extends CreateHostDto {
       {required this.label,
       required this.hostname,
       required this.username,
-      required this.port,
+      this.port,
       this.password,
       this.keyId})
       : super._() {
@@ -36,7 +36,6 @@ class _$CreateHostDto extends CreateHostDto {
         hostname, r'CreateHostDto', 'hostname');
     BuiltValueNullFieldError.checkNotNull(
         username, r'CreateHostDto', 'username');
-    BuiltValueNullFieldError.checkNotNull(port, r'CreateHostDto', 'port');
   }
 
   @override
@@ -153,8 +152,7 @@ class CreateHostDtoBuilder
                 hostname, r'CreateHostDto', 'hostname'),
             username: BuiltValueNullFieldError.checkNotNull(
                 username, r'CreateHostDto', 'username'),
-            port: BuiltValueNullFieldError.checkNotNull(
-                port, r'CreateHostDto', 'port'),
+            port: port,
             password: password,
             keyId: keyId);
     replace(_$result);

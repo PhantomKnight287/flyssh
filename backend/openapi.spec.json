@@ -550,8 +550,7 @@
         "required": [
           "label",
           "hostname",
-          "username",
-          "port"
+          "username"
         ]
       },
       "GenericResponseDto": {
