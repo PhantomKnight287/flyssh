@@ -7,13 +7,18 @@ void main() {
   // TODO add properties to the builder and call build()
 
   group(UserEntity, () {
-    // String username
-    test('to test the property `username`', () async {
+    // String id
+    test('to test the property `id`', () async {
       // TODO
     });
 
     // String name
     test('to test the property `name`', () async {
+      // TODO
+    });
+
+    // String username
+    test('to test the property `username`', () async {
       // TODO
     });
 

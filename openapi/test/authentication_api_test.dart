@@ -7,6 +7,15 @@ void main() {
   final instance = Openapi().getAuthenticationApi();
 
   group(AuthenticationApi, () {
+    // Get current user
+    //
+    // Get current user
+    //
+    //Future<UserEntity> authControllerGetCurrentUser() async
+    test('test authControllerGetCurrentUser', () async {
+      // TODO
+    });
+
     // Login
     //
     // Login

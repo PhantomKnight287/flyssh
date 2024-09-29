@@ -37,9 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
       LoginDTO(
         (b) {
           b
-            ..masterkey = _masterKeyController.text
-            ..password = _passwordController.text
-            ..username = _usernameController.text
+            ..masterkey = _masterKeyController.text.trim()
+            ..password = _passwordController.text.trim()
+            ..username = _usernameController.text.trim()
             ..build();
         },
       ),

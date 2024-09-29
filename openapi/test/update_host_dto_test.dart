@@ -24,6 +24,12 @@ void main() {
       // TODO
     });
 
+    // The port at which sshd is running
+    // num port
+    test('to test the property `port`', () async {
+      // TODO
+    });
+
     // Encrypted password
     // String password
     test('to test the property `password`', () async {

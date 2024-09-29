@@ -1,5 +1,7 @@
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/screens/hosts/service/main.dart';
@@ -7,6 +9,7 @@ import 'package:flyssh/utils/device.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class CreateHostsScreen extends StatefulWidget {
   const CreateHostsScreen({super.key});
@@ -26,14 +29,29 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
       setState(() {
         _loading = true;
       });
+      const storage = FlutterSecureStorage();
+      final encrypter = encrypt.Encrypter(
+        AES(
+          encrypt.Key.fromBase64(
+            (await storage.read(
+              key: MASTER_KEY_KEY,
+            ))!,
+          ),
+        ),
+      );
       final req = await HostsService.createHost(
         CreateHostDto(
           (b) {
             b
-              ..hostname = _hostnameController.text
-              ..label = _labelController.text
-              ..username = _usernameController.text
-              ..password = _passwordController.text
+              ..hostname = _hostnameController.text.trim()
+              ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Host'
+              ..username = _usernameController.text.trim()
+              ..password = encrypter
+                  .encrypt(
+                    _passwordController.text.trim(),
+                    iv: encrypt.IV.fromLength(16),
+                  )
+                  .base64
               ..build();
           },
         ),
@@ -43,6 +61,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
+      print(e);
       showErrorToast(e);
     } finally {
       setState(() {

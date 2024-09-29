@@ -22,6 +22,11 @@ void main() {
       // TODO
     });
 
+    // num port
+    test('to test the property `port`', () async {
+      // TODO
+    });
+
     // String password
     test('to test the property `password`', () async {
       // TODO

@@ -9,7 +9,9 @@ import {
 } from 'class-validator';
 
 export class CreateHostDto {
-  @ApiProperty({})
+  @ApiProperty({
+    required: true,
+  })
   @IsString({
     message: 'Label must be a string',
   })

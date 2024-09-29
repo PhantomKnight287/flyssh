@@ -21,7 +21,7 @@ export class EncryptionManager {
   private readonly pbkdf2Digest: string = 'sha256';
 
   async generateMasterKey(): Promise<string> {
-    return crypto.randomBytes(this.keyLength).toString('hex');
+    return crypto.randomBytes(this.keyLength).toString('base64');
   }
 
   async encrypt(

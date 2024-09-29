@@ -40,9 +40,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SignupDTO(
           (b) {
             b
-              ..password = _passwordController.text
-              ..username = _usernameController.text
-              ..name = _nameController.text
+              ..password = _passwordController.text.trim()
+              ..username = _usernameController.text.trim()
+              ..name = _nameController.text.trim()
               ..build();
           },
         ),
