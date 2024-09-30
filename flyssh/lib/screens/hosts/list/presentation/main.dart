@@ -4,6 +4,7 @@ import 'package:flyssh/components/custom_cupertino_route.dart';
 import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/screens/hosts/create/presentation/main.dart';
 import 'package:flyssh/screens/hosts/service/main.dart';
+import 'package:flyssh/screens/ssh/presentation/main.dart';
 import 'package:flyssh/utils/device.dart';
 
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -34,6 +35,7 @@ class _HostsScreenState extends State<HostsScreen> {
       final newItems = await HostsService.getHosts(
         pageKey,
       );
+
       final items = newItems.toList();
       final isLastPage = items.length < PAGE_SIZE;
       if (isLastPage) {
@@ -150,40 +152,27 @@ class _HostsScreenState extends State<HostsScreen> {
                           },
                         ),
                       )
-                    : LayoutBuilder(builder: (context, constraints) {
-                        double width = constraints.maxWidth;
-                        int crossAxisCount;
-
-                        if (width < 600) {
-                          crossAxisCount = 2;
-                        } else if (width < 900) {
-                          crossAxisCount = 3;
-                        } else {
-                          crossAxisCount = 4;
-                        }
-
-                        return PagedGridView(
-                          pagingController: _pagingController,
-                          builderDelegate: PagedChildBuilderDelegate<PartialHost>(
-                            itemBuilder: (context, host, index) => HostItem(
-                              host: host,
-                            ),
-                            noItemsFoundIndicatorBuilder: (context) {
-                              return const Center(
-                                child: Text(
-                                  "No hosts found, add one",
-                                ),
-                              );
-                            },
+                    : PagedGridView(
+                        pagingController: _pagingController,
+                        builderDelegate: PagedChildBuilderDelegate<PartialHost>(
+                          itemBuilder: (context, host, index) => HostItem(
+                            host: host,
                           ),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            childAspectRatio: 4,
-                            crossAxisSpacing: 10.0,
-                            mainAxisSpacing: 10.0,
-                          ),
-                        );
-                      }),
+                          noItemsFoundIndicatorBuilder: (context) {
+                            return const Center(
+                              child: Text(
+                                "No hosts found, add one",
+                              ),
+                            );
+                          },
+                        ),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 150 / 35,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          crossAxisCount: 8,
+                        ),
+                      ),
               ),
             ),
           ],
@@ -274,16 +263,28 @@ class HostItem extends StatelessWidget {
         ),
       ),
       enabled: true,
-      onTap: () {},
-      leading: Container(
-        decoration: BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.circular(
-            5,
+      onTap: () {
+        Navigator.of(context).push(
+          CustomCupertinoRoute(
+            builder: (context) {
+              return SshScreen(id: host.id);
+            },
+          ),
+        );
+      },
+      leading: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.amber,
+            borderRadius: BorderRadius.circular(
+              5,
+            ),
+          ),
+          padding: const EdgeInsets.all(4),
+          child: const Icon(
+            Icons.terminal,
           ),
         ),
-        padding: const EdgeInsets.all(4),
-        child: const Icon(Icons.terminal),
       ),
     );
   }

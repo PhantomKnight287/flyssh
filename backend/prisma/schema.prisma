@@ -38,7 +38,7 @@ model Host {
   password String?
   key      Key?    @relation(fields: [keyId], references: [id])
   keyId    String? @map("key_id")
-  owner    User    @relation(fields: [ownerId], references: [id])
+  owner    User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId  String  @map("owner_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -53,7 +53,7 @@ model Key {
   value      String
   passphrase String?
   hosts      Host[]
-  owner      User    @relation(fields: [ownerId], references: [id])
+  owner      User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId    String  @map("owner_id")
 
   createdAt DateTime @default(now()) @map("created_at")

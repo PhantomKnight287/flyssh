@@ -22,6 +22,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _labelController = TextEditingController(), _hostnameController = TextEditingController(), _usernameController = TextEditingController(), _passwordController = TextEditingController();
   bool _loading = false;
+  bool _passwordShown = false;
 
   Future<void> _createHost() async {
     if (!_formKey.currentState!.validate() || _loading) return;
@@ -61,7 +62,6 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      print(e);
       showErrorToast(e);
     } finally {
       setState(() {
@@ -259,10 +259,21 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                         hintText: "abandoned_project",
                         keyboardType: TextInputType.name,
                         controller: _passwordController,
+                        obscureText: !_passwordShown,
                         validator: (p0) {
                           if (p0 == null || p0.isEmpty) return "Please enter login password or choose a key";
                           return null;
                         },
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordShown ? Icons.visibility_off : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordShown = !_passwordShown;
+                            });
+                          },
+                        ),
                       ),
                       const Gap(
                         BASE_SPACE * 4,
