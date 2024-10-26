@@ -16,19 +16,21 @@ class HostService {
     if (encryptedHostData.password == null) return encryptedHostData;
     const storage = FlutterSecureStorage();
 
-    final encryter = encrypt.Encrypter(encrypt.AES(
-      encrypt.Key.fromBase64(
-        (await storage.read(
-          key: MASTER_KEY_KEY,
-        ))!,
+    final encryter = encrypt.Encrypter(
+      encrypt.AES(
+        encrypt.Key.fromBase64(
+          (await storage.read(
+            key: MASTER_KEY_KEY,
+          ))!,
+        ),
+        padding: null,
       ),
-      padding: null,
-    ));
+    );
 
     final decryptedPassword = encryter.decrypt64(
       encryptedHostData.password!,
-      iv: encrypt.IV.fromLength(
-        16,
+      iv: encrypt.IV.fromBase64(
+        encryptedHostData.iv,
       ),
     );
     return Host(
@@ -36,9 +38,11 @@ class HostService {
         b
           ..id = encryptedHostData.id
           ..label = encryptedHostData.label
-          ..password = decryptedPassword
+          ..password = decryptedPassword.trim()
           ..port = encryptedHostData.port
           ..username = encryptedHostData.username
+          ..iv = encryptedHostData.iv
+          ..hostname = encryptedHostData.hostname
           ..build();
       },
     );

@@ -17,6 +17,7 @@ part 'update_host_dto.g.dart';
 /// * [port] - The port at which sshd is running
 /// * [password] - Encrypted password
 /// * [keyId] - Id of key, existing or new
+/// * [iv] - IV used for encryption
 @BuiltValue()
 abstract class UpdateHostDto implements Built<UpdateHostDto, UpdateHostDtoBuilder> {
   @BuiltValueField(wireName: r'label')
@@ -41,6 +42,10 @@ abstract class UpdateHostDto implements Built<UpdateHostDto, UpdateHostDtoBuilde
   /// Id of key, existing or new
   @BuiltValueField(wireName: r'keyId')
   String? get keyId;
+
+  /// IV used for encryption
+  @BuiltValueField(wireName: r'iv')
+  String? get iv;
 
   UpdateHostDto._();
 
@@ -105,6 +110,13 @@ class _$UpdateHostDtoSerializer implements PrimitiveSerializer<UpdateHostDto> {
       yield serializers.serialize(
         object.keyId,
         specifiedType: const FullType(String),
+      );
+    }
+    if (object.iv != null) {
+      yield r'iv';
+      yield serializers.serialize(
+        object.iv,
+        specifiedType: const FullType.nullable(String),
       );
     }
   }
@@ -172,6 +184,14 @@ class _$UpdateHostDtoSerializer implements PrimitiveSerializer<UpdateHostDto> {
             specifiedType: const FullType(String),
           ) as String;
           result.keyId = valueDes;
+          break;
+        case r'iv':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.iv = valueDes;
           break;
         default:
           unhandled.add(key);

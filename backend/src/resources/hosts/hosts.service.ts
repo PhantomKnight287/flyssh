@@ -22,6 +22,7 @@ export class HostsService {
         hostname: createHostDto.hostname,
         username: createHostDto.username,
         password: createHostDto.password,
+        iv: createHostDto.iv,
         key: createHostDto.keyId
           ? {
               connect: {

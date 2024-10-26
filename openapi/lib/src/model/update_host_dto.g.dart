@@ -19,6 +19,8 @@ class _$UpdateHostDto extends UpdateHostDto {
   final String? password;
   @override
   final String? keyId;
+  @override
+  final String? iv;
 
   factory _$UpdateHostDto([void Function(UpdateHostDtoBuilder)? updates]) =>
       (new UpdateHostDtoBuilder()..update(updates))._build();
@@ -29,7 +31,8 @@ class _$UpdateHostDto extends UpdateHostDto {
       this.username,
       this.port,
       this.password,
-      this.keyId})
+      this.keyId,
+      this.iv})
       : super._();
 
   @override
@@ -48,7 +51,8 @@ class _$UpdateHostDto extends UpdateHostDto {
         username == other.username &&
         port == other.port &&
         password == other.password &&
-        keyId == other.keyId;
+        keyId == other.keyId &&
+        iv == other.iv;
   }
 
   @override
@@ -60,6 +64,7 @@ class _$UpdateHostDto extends UpdateHostDto {
     _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jc(_$hash, keyId.hashCode);
+    _$hash = $jc(_$hash, iv.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -72,7 +77,8 @@ class _$UpdateHostDto extends UpdateHostDto {
           ..add('username', username)
           ..add('port', port)
           ..add('password', password)
-          ..add('keyId', keyId))
+          ..add('keyId', keyId)
+          ..add('iv', iv))
         .toString();
   }
 }
@@ -105,6 +111,10 @@ class UpdateHostDtoBuilder
   String? get keyId => _$this._keyId;
   set keyId(String? keyId) => _$this._keyId = keyId;
 
+  String? _iv;
+  String? get iv => _$this._iv;
+  set iv(String? iv) => _$this._iv = iv;
+
   UpdateHostDtoBuilder() {
     UpdateHostDto._defaults(this);
   }
@@ -118,6 +128,7 @@ class UpdateHostDtoBuilder
       _port = $v.port;
       _password = $v.password;
       _keyId = $v.keyId;
+      _iv = $v.iv;
       _$v = null;
     }
     return this;
@@ -145,7 +156,8 @@ class UpdateHostDtoBuilder
             username: username,
             port: port,
             password: password,
-            keyId: keyId);
+            keyId: keyId,
+            iv: iv);
     replace(_$result);
     return _$result;
   }

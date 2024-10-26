@@ -545,6 +545,11 @@
           "keyId": {
             "type": "string",
             "description": "Id of key, existing or new"
+          },
+          "iv": {
+            "type": "string",
+            "description": "IV used for encryption",
+            "nullable": true
           }
         },
         "required": [
@@ -605,13 +610,21 @@
           "password": {
             "type": "string",
             "nullable": true
+          },
+          "iv": {
+            "type": "string"
+          },
+          "hostname": {
+            "type": "string"
           }
         },
         "required": [
           "id",
           "label",
           "username",
-          "port"
+          "port",
+          "iv",
+          "hostname"
         ]
       },
       "UpdateHostDto": {
@@ -640,6 +653,11 @@
           "keyId": {
             "type": "string",
             "description": "Id of key, existing or new"
+          },
+          "iv": {
+            "type": "string",
+            "description": "IV used for encryption",
+            "nullable": true
           }
         }
       }

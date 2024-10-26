@@ -67,4 +67,14 @@ export class CreateHostDto {
   })
   @ValidateIf((o) => !o.password)
   keyId: string;
+
+  @ApiProperty({
+    description: 'IV used for encryption',
+    nullable: true,
+    required: false,
+  })
+  @IsString({
+    message: 'IV is required',
+  })
+  iv: string;
 }

@@ -16,6 +16,8 @@ part 'host.g.dart';
 /// * [username] 
 /// * [port] 
 /// * [password] 
+/// * [iv] 
+/// * [hostname] 
 @BuiltValue()
 abstract class Host implements Built<Host, HostBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -32,6 +34,12 @@ abstract class Host implements Built<Host, HostBuilder> {
 
   @BuiltValueField(wireName: r'password')
   String? get password;
+
+  @BuiltValueField(wireName: r'iv')
+  String get iv;
+
+  @BuiltValueField(wireName: r'hostname')
+  String get hostname;
 
   Host._();
 
@@ -83,6 +91,16 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
         specifiedType: const FullType.nullable(String),
       );
     }
+    yield r'iv';
+    yield serializers.serialize(
+      object.iv,
+      specifiedType: const FullType(String),
+    );
+    yield r'hostname';
+    yield serializers.serialize(
+      object.hostname,
+      specifiedType: const FullType(String),
+    );
   }
 
   @override
@@ -141,6 +159,20 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
           ) as String?;
           if (valueDes == null) continue;
           result.password = valueDes;
+          break;
+        case r'iv':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.iv = valueDes;
+          break;
+        case r'hostname':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.hostname = valueDes;
           break;
         default:
           unhandled.add(key);

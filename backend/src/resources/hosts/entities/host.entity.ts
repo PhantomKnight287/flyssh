@@ -24,4 +24,12 @@ export class Host extends PartialHost {
   @IsString()
   @IsOptional()
   password?: string;
+
+  @ApiProperty()
+  @IsString()
+  iv: string;
+
+  @ApiProperty({})
+  @IsString()
+  hostname: string;
 }

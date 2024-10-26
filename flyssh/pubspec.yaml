@@ -1,6 +1,6 @@
 name: flyssh
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -28,6 +28,11 @@ dependencies:
   xterm: ^4.0.0
   dartssh2: ^2.10.0
   file_picker: ^8.1.2
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/window_size
+      ref: eb3964990cf19629c89ff8cb4a37640c7b3d5601
 
 dev_dependencies:
   flutter_test:

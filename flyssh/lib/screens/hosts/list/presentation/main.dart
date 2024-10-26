@@ -152,27 +152,37 @@ class _HostsScreenState extends State<HostsScreen> {
                           },
                         ),
                       )
-                    : PagedGridView(
-                        pagingController: _pagingController,
-                        builderDelegate: PagedChildBuilderDelegate<PartialHost>(
-                          itemBuilder: (context, host, index) => HostItem(
-                            host: host,
+                    : LayoutBuilder(builder: (context, constraints) {
+                        final width = constraints.maxWidth;
+                        final crossAxisCount = width < 600
+                            ? 2 // Mobile screens
+                            : width < 900
+                                ? 3 // Tablet/smaller desktop
+                                : width < 1200
+                                    ? 4 // Desktop
+                                    : 5;
+                        return PagedGridView(
+                          pagingController: _pagingController,
+                          builderDelegate: PagedChildBuilderDelegate<PartialHost>(
+                            itemBuilder: (context, host, index) => HostItem(
+                              host: host,
+                            ),
+                            noItemsFoundIndicatorBuilder: (context) {
+                              return const Center(
+                                child: Text(
+                                  "No hosts found, add one",
+                                ),
+                              );
+                            },
                           ),
-                          noItemsFoundIndicatorBuilder: (context) {
-                            return const Center(
-                              child: Text(
-                                "No hosts found, add one",
-                              ),
-                            );
-                          },
-                        ),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 150 / 35,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 8,
-                        ),
-                      ),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: crossAxisCount,
+                            mainAxisExtent: 70,
+                          ),
+                        );
+                      }),
               ),
             ),
           ],

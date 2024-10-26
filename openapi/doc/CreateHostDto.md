@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **port** | **num** | The port at which sshd is running | [optional] 
 **password** | **String** | Encrypted password | [optional] 
 **keyId** | **String** | Id of key, existing or new | [optional] 
+**iv** | **String** | IV used for encryption | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
