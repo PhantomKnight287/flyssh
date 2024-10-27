@@ -15,9 +15,9 @@ part 'host.g.dart';
 /// * [label] 
 /// * [username] 
 /// * [port] 
+/// * [hostname] 
 /// * [password] 
 /// * [iv] 
-/// * [hostname] 
 @BuiltValue()
 abstract class Host implements Built<Host, HostBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -32,14 +32,14 @@ abstract class Host implements Built<Host, HostBuilder> {
   @BuiltValueField(wireName: r'port')
   num get port;
 
+  @BuiltValueField(wireName: r'hostname')
+  String get hostname;
+
   @BuiltValueField(wireName: r'password')
   String? get password;
 
   @BuiltValueField(wireName: r'iv')
   String get iv;
-
-  @BuiltValueField(wireName: r'hostname')
-  String get hostname;
 
   Host._();
 
@@ -84,6 +84,11 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
       object.port,
       specifiedType: const FullType(num),
     );
+    yield r'hostname';
+    yield serializers.serialize(
+      object.hostname,
+      specifiedType: const FullType(String),
+    );
     if (object.password != null) {
       yield r'password';
       yield serializers.serialize(
@@ -94,11 +99,6 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
     yield r'iv';
     yield serializers.serialize(
       object.iv,
-      specifiedType: const FullType(String),
-    );
-    yield r'hostname';
-    yield serializers.serialize(
-      object.hostname,
       specifiedType: const FullType(String),
     );
   }
@@ -152,6 +152,13 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
           ) as num;
           result.port = valueDes;
           break;
+        case r'hostname':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.hostname = valueDes;
+          break;
         case r'password':
           final valueDes = serializers.deserialize(
             value,
@@ -166,13 +173,6 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
             specifiedType: const FullType(String),
           ) as String;
           result.iv = valueDes;
-          break;
-        case r'hostname':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(String),
-          ) as String;
-          result.hostname = valueDes;
           break;
         default:
           unhandled.add(key);

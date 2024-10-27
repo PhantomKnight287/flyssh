@@ -45,6 +45,28 @@ class MainApp extends StatelessWidget {
               ),
             ),
           ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: const WidgetStatePropertyAll(
+                Colors.transparent,
+              ),
+              foregroundColor: const WidgetStatePropertyAll(
+                Colors.white,
+              ),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ),
+                ),
+              ),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.all(
+                  isPhone() ? BASE_SPACE * 2 : BASE_SPACE * 5,
+                ),
+              ),
+            ),
+          ),
           textTheme: TextTheme(
             displayLarge: GoogleFonts.inter(
               fontSize: 96,

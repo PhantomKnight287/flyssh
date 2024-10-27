@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flyssh/components/bottom.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
+import 'package:flyssh/models/key.dart';
 import 'package:flyssh/screens/hosts/service/main.dart';
 import 'package:flyssh/screens/keys/create/presentation/main.dart';
 import 'package:flyssh/utils/device.dart';
@@ -12,9 +13,14 @@ import 'package:flyssh/utils/error.dart';
 import 'package:gap/gap.dart';
 import 'package:openapi/openapi.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class CreateHostsScreen extends StatefulWidget {
-  const CreateHostsScreen({super.key});
+  const CreateHostsScreen({
+    super.key,
+    this.host,
+  });
+  final PartialHost? host;
 
   @override
   State<CreateHostsScreen> createState() => _CreateHostsScreenState();
@@ -22,13 +28,28 @@ class CreateHostsScreen extends StatefulWidget {
 
 class _CreateHostsScreenState extends State<CreateHostsScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _labelController = TextEditingController(), _hostnameController = TextEditingController(), _usernameController = TextEditingController(), _passwordController = TextEditingController();
+  final _labelController = TextEditingController(),
+      _hostnameController = TextEditingController(),
+      _usernameController = TextEditingController(),
+      _passwordController = TextEditingController(),
+      _portController = TextEditingController.fromValue(
+        TextEditingValue(
+          text: '22',
+        ),
+      );
   bool _loading = false;
   bool _passwordShown = false;
+  KeyResponse? _selectedKey;
 
   Future<void> _createHost() async {
     if (!_formKey.currentState!.validate() || _loading) return;
     try {
+      try {
+        int.parse(_portController.text.trim());
+      } catch (e) {
+        showErrorToast("Invalid port");
+        return;
+      }
       setState(() {
         _loading = true;
       });
@@ -50,14 +71,18 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
               ..hostname = _hostnameController.text.trim()
               ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Host'
               ..username = _usernameController.text.trim()
-              ..password = encrypter
+              ..port = int.parse(_portController.text.trim())
+              ..iv = iv.base64;
+            if (_selectedKey != null) b.keyId = _selectedKey!.id;
+            if (_passwordController.text.trim().isNotEmpty && !_passwordController.text.trim().startsWith("Using Key:")) {
+              b.password = encrypter
                   .encrypt(
                     _passwordController.text.trim(),
                     iv: iv,
                   )
-                  .base64
-              ..iv = iv.base64
-              ..build();
+                  .base64;
+            }
+            b.build();
           },
         ),
       );
@@ -81,6 +106,16 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
     _hostnameController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.host != null) {
+      _labelController.text = widget.host!.label;
+      _hostnameController.text = widget.host!.hostname;
+      _usernameController.text = widget.host!.username;
+    }
   }
 
   @override
@@ -202,6 +237,28 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                         BASE_SPACE * 4,
                       ),
                       Text(
+                        "Port",
+                        style: TextStyle(
+                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Gap(
+                        BASE_SPACE * 2,
+                      ),
+                      InputField(
+                        hintText: "22",
+                        keyboardType: TextInputType.number,
+                        controller: _portController,
+                        validator: (p0) {
+                          if (p0 == null || p0.isEmpty) return "Please enter the hostname";
+                          return null;
+                        },
+                      ),
+                      const Gap(
+                        BASE_SPACE * 4,
+                      ),
+                      Text(
                         "Username",
                         style: TextStyle(
                           fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
@@ -235,12 +292,67 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                           const Spacer(),
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) {
-                                    return const CreateKeyScreen();
-                                  },
-                                ),
+                              WoltModalSheet.show(
+                                context: context,
+                                pageListBuilder: (context) {
+                                  return [
+                                    WoltModalSheetPage(
+                                      topBarTitle: Text(
+                                        "Use a key",
+                                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                              color: Colors.black,
+                                            ),
+                                      ),
+                                      isTopBarLayerAlwaysVisible: true,
+                                      trailingNavBarWidget: IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: Navigator.of(context).pop,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                final response = await Navigator.of(context).push<KeyResponse>(
+                                                  CupertinoModalPopupRoute(
+                                                    builder: (context) => CreateKeyScreen(),
+                                                  ),
+                                                );
+                                                if (response != null) {
+                                                  _passwordController.text = "Using Key: ${response.label}";
+                                                  setState(() {
+                                                    _selectedKey = response;
+                                                  });
+                                                }
+                                              },
+                                              child: Text(
+                                                "Create new key",
+                                              ),
+                                            ),
+                                            const Gap(
+                                              BASE_SPACE * 4,
+                                            ),
+                                            OutlinedButton(
+                                              onPressed: () {
+                                                WoltModalSheet.of(context).showAtIndex(2);
+                                              },
+                                              style: ButtonStyle(
+                                                foregroundColor: WidgetStatePropertyAll(
+                                                  Colors.black,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Select existing key",
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ];
+                                },
                               );
                             },
                             style: ButtonStyle(
@@ -254,6 +366,19 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                               side: WidgetStatePropertyAll(
                                 BorderSide(
                                   color: Colors.grey.shade300,
+                                ),
+                              ),
+                              padding: WidgetStatePropertyAll(
+                                EdgeInsets.symmetric(
+                                  horizontal: BASE_SPACE * 2,
+                                  vertical: BASE_SPACE,
+                                ),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    8,
+                                  ),
                                 ),
                               ),
                             ),
@@ -273,7 +398,8 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                         hintText: "abandoned_project",
                         keyboardType: TextInputType.name,
                         controller: _passwordController,
-                        obscureText: !_passwordShown,
+                        obscureText: _selectedKey == null ? !_passwordShown : false,
+                        enabled: _selectedKey == null,
                         validator: (p0) {
                           if (p0 == null || p0.isEmpty) return "Please enter login password or choose a key";
                           return null;

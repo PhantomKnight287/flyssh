@@ -17,6 +17,10 @@ export class PartialHost {
   @ApiProperty()
   @IsNumber()
   port: number;
+
+  @ApiProperty({})
+  @IsString()
+  hostname: string;
 }
 
 export class Host extends PartialHost {
@@ -28,8 +32,4 @@ export class Host extends PartialHost {
   @ApiProperty()
   @IsString()
   iv: string;
-
-  @ApiProperty({})
-  @IsString()
-  hostname: string;
 }

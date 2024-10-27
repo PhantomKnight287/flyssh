@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flyssh/components/bottom.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
+import 'package:flyssh/models/key.dart';
 import 'package:flyssh/screens/keys/service/main.dart';
 import 'package:flyssh/utils/device.dart';
 import 'package:flyssh/utils/error.dart';
@@ -67,6 +68,10 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
       if (mounted) {
         Navigator.pop(
           context,
+          KeyResponse(
+            id: req.id,
+            label: _labelController.text.trim(),
+          ),
         );
       }
     } catch (e) {

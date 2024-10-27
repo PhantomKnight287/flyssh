@@ -49,4 +49,3 @@ lib/src/model/update_host_dto.dart
 lib/src/model/user_entity.dart
 lib/src/serializers.dart
 pubspec.yaml
-test/count_test.dart

@@ -60,6 +60,7 @@ export class HostsService {
         label: true,
         username: true,
         port: true,
+        hostname: true,
       },
       where: {
         ownerId: userId,

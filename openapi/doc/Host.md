@@ -12,9 +12,9 @@ Name | Type | Description | Notes
 **label** | **String** |  | 
 **username** | **String** |  | 
 **port** | **num** |  | 
+**hostname** | **String** |  | 
 **password** | **String** |  | [optional] 
 **iv** | **String** |  | 
-**hostname** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

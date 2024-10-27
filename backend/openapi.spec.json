@@ -669,13 +669,17 @@
           },
           "port": {
             "type": "number"
+          },
+          "hostname": {
+            "type": "string"
           }
         },
         "required": [
           "id",
           "label",
           "username",
-          "port"
+          "port",
+          "hostname"
         ]
       },
       "Host": {
@@ -693,14 +697,14 @@
           "port": {
             "type": "number"
           },
+          "hostname": {
+            "type": "string"
+          },
           "password": {
             "type": "string",
             "nullable": true
           },
           "iv": {
-            "type": "string"
-          },
-          "hostname": {
             "type": "string"
           }
         },
@@ -709,8 +713,8 @@
           "label",
           "username",
           "port",
-          "iv",
-          "hostname"
+          "hostname",
+          "iv"
         ]
       },
       "UpdateHostDto": {

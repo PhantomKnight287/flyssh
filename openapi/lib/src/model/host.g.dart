@@ -16,11 +16,11 @@ class _$Host extends Host {
   @override
   final num port;
   @override
+  final String hostname;
+  @override
   final String? password;
   @override
   final String iv;
-  @override
-  final String hostname;
 
   factory _$Host([void Function(HostBuilder)? updates]) =>
       (new HostBuilder()..update(updates))._build();
@@ -30,16 +30,16 @@ class _$Host extends Host {
       required this.label,
       required this.username,
       required this.port,
+      required this.hostname,
       this.password,
-      required this.iv,
-      required this.hostname})
+      required this.iv})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'Host', 'id');
     BuiltValueNullFieldError.checkNotNull(label, r'Host', 'label');
     BuiltValueNullFieldError.checkNotNull(username, r'Host', 'username');
     BuiltValueNullFieldError.checkNotNull(port, r'Host', 'port');
-    BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv');
     BuiltValueNullFieldError.checkNotNull(hostname, r'Host', 'hostname');
+    BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv');
   }
 
   @override
@@ -57,9 +57,9 @@ class _$Host extends Host {
         label == other.label &&
         username == other.username &&
         port == other.port &&
+        hostname == other.hostname &&
         password == other.password &&
-        iv == other.iv &&
-        hostname == other.hostname;
+        iv == other.iv;
   }
 
   @override
@@ -69,9 +69,9 @@ class _$Host extends Host {
     _$hash = $jc(_$hash, label.hashCode);
     _$hash = $jc(_$hash, username.hashCode);
     _$hash = $jc(_$hash, port.hashCode);
+    _$hash = $jc(_$hash, hostname.hashCode);
     _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jc(_$hash, iv.hashCode);
-    _$hash = $jc(_$hash, hostname.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -83,9 +83,9 @@ class _$Host extends Host {
           ..add('label', label)
           ..add('username', username)
           ..add('port', port)
+          ..add('hostname', hostname)
           ..add('password', password)
-          ..add('iv', iv)
-          ..add('hostname', hostname))
+          ..add('iv', iv))
         .toString();
   }
 }
@@ -109,6 +109,10 @@ class HostBuilder implements Builder<Host, HostBuilder> {
   num? get port => _$this._port;
   set port(num? port) => _$this._port = port;
 
+  String? _hostname;
+  String? get hostname => _$this._hostname;
+  set hostname(String? hostname) => _$this._hostname = hostname;
+
   String? _password;
   String? get password => _$this._password;
   set password(String? password) => _$this._password = password;
@@ -116,10 +120,6 @@ class HostBuilder implements Builder<Host, HostBuilder> {
   String? _iv;
   String? get iv => _$this._iv;
   set iv(String? iv) => _$this._iv = iv;
-
-  String? _hostname;
-  String? get hostname => _$this._hostname;
-  set hostname(String? hostname) => _$this._hostname = hostname;
 
   HostBuilder() {
     Host._defaults(this);
@@ -132,9 +132,9 @@ class HostBuilder implements Builder<Host, HostBuilder> {
       _label = $v.label;
       _username = $v.username;
       _port = $v.port;
+      _hostname = $v.hostname;
       _password = $v.password;
       _iv = $v.iv;
-      _hostname = $v.hostname;
       _$v = null;
     }
     return this;
@@ -163,10 +163,10 @@ class HostBuilder implements Builder<Host, HostBuilder> {
             username: BuiltValueNullFieldError.checkNotNull(
                 username, r'Host', 'username'),
             port: BuiltValueNullFieldError.checkNotNull(port, r'Host', 'port'),
-            password: password,
-            iv: BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv'),
             hostname: BuiltValueNullFieldError.checkNotNull(
-                hostname, r'Host', 'hostname'));
+                hostname, r'Host', 'hostname'),
+            password: password,
+            iv: BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv'));
     replace(_$result);
     return _$result;
   }
