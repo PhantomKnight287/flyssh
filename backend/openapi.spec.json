@@ -391,6 +391,92 @@
           }
         ]
       }
+    },
+    "/keys": {
+      "post": {
+        "operationId": "KeysController_create",
+        "summary": "Create a key",
+        "description": "Create a key",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKeyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Keys"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "KeysController_findAll",
+        "summary": "Get all keys",
+        "description": "Get all keys(requires pagination)",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "description": "The page no for pagination(must start with 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "description": "No of records to return(must stay constant for a transaction)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PartialKey"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Keys"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -660,6 +746,63 @@
             "nullable": true
           }
         }
+      },
+      "CreateKeyDTO": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Label of the key"
+          },
+          "value": {
+            "type": "string",
+            "description": "Encrypted 'private' key"
+          },
+          "passphrase": {
+            "type": "string",
+            "description": "Passphrase"
+          },
+          "iv": {
+            "type": "string",
+            "description": "IV used to encrypt the key"
+          }
+        },
+        "required": [
+          "label",
+          "value",
+          "iv"
+        ]
+      },
+      "Count": {
+        "type": "object",
+        "properties": {
+          "hosts": {
+            "type": "number",
+            "description": "No of hosts using this key"
+          }
+        },
+        "required": [
+          "hosts"
+        ]
+      },
+      "PartialKey": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "_count": {
+            "$ref": "#/components/schemas/Count"
+          }
+        },
+        "required": [
+          "label",
+          "id",
+          "_count"
+        ]
       }
     }
   }

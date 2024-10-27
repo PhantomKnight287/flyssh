@@ -43,7 +43,15 @@ export class HostsService {
     return newHost;
   }
 
-  async findAll({ page, limit }: { page: number; limit: number }) {
+  async findAll({
+    page,
+    limit,
+    userId,
+  }: {
+    page: number;
+    limit: number;
+    userId: string;
+  }) {
     const hosts = await prisma.host.paginate({
       limit,
       page,
@@ -52,6 +60,9 @@ export class HostsService {
         label: true,
         username: true,
         port: true,
+      },
+      where: {
+        ownerId: userId,
       },
       orderBy: [
         {

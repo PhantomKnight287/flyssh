@@ -12,6 +12,7 @@ import 'package:openapi/src/auth/oauth.dart';
 import 'package:openapi/src/api/authentication_api.dart';
 import 'package:openapi/src/api/default_api.dart';
 import 'package:openapi/src/api/hosts_api.dart';
+import 'package:openapi/src/api/keys_api.dart';
 
 class Openapi {
   static const String basePath = r'http://localhost';
@@ -83,5 +84,11 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   HostsApi getHostsApi() {
     return HostsApi(dio, serializers);
+  }
+
+  /// Get KeysApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  KeysApi getKeysApi() {
+    return KeysApi(dio, serializers);
   }
 }

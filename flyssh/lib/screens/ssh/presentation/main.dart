@@ -24,12 +24,15 @@ class SshScreen extends StatefulWidget {
 
 class SshScreenState extends State<SshScreen> {
   late final terminal = Terminal(inputHandler: keyboard);
-  final keyboard = VirtualKeyboard(defaultInputHandler);
+  late final keyboard = VirtualKeyboard(
+    defaultInputHandler,
+  );
   SSHSession? session;
   bool isLoading = true;
   String? error;
+  String? title = "FlySSH";
   CustomTerminalTheme theme = CustomTerminalTheme.from(TerminalThemes.defaultTheme, name: "Default");
-
+  late SSHClient client;
   @override
   void initState() {
     super.initState();
@@ -42,7 +45,7 @@ class SshScreenState extends State<SshScreen> {
         widget.id,
       );
       final cleanPassword = host.password!.replaceAll(String.fromCharCode(8), '').trim();
-      final client = SSHClient(
+      client = SSHClient(
         await SSHSocket.connect(
           host.hostname,
           host.port.toInt(),
@@ -78,6 +81,10 @@ class SshScreenState extends State<SshScreen> {
       terminal.onTitleChange = (title) async {
         if (isDesktop()) {
           setWindowTitle(title);
+        } else {
+          setState(() {
+            this.title = title;
+          });
         }
       };
 
@@ -125,7 +132,18 @@ class SshScreenState extends State<SshScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
+      appBar: isPhone()
+          ? AppBar(
+              title: title != null
+                  ? Text(
+                      title!,
+                      style: TextStyle(
+                        fontSize: Theme.of(context).textTheme.titleMedium!.fontSize,
+                      ),
+                    )
+                  : null,
+            )
+          : null,
       body: SafeArea(
         child: _buildBody(),
       ),
@@ -140,8 +158,16 @@ class SshScreenState extends State<SshScreen> {
     }
 
     if (error != null) {
-      return Center(
-        child: Text(error!),
+      return Padding(
+        padding: const EdgeInsets.all(
+          8.0,
+        ),
+        child: Center(
+          child: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+        ),
       );
     }
 
@@ -154,7 +180,11 @@ class SshScreenState extends State<SshScreen> {
             theme: theme,
           ),
         ),
-        if (!isDesktop()) VirtualKeyboardView(keyboard),
+        if (!isDesktop())
+          VirtualKeyboardView(
+            keyboard,
+            session!,
+          ),
       ],
     );
   }

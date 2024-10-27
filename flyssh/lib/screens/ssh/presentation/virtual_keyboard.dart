@@ -1,10 +1,13 @@
-// Virtual Keyboard to show in devices with keyboard without ctrl, alt, shift keys like iOS and Android
+import 'dart:typed_data';
 
+import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'package:xterm/xterm.dart';
 
 class VirtualKeyboardView extends StatelessWidget {
-  const VirtualKeyboardView(this.keyboard, {super.key});
+  const VirtualKeyboardView(this.keyboard, this.session, {super.key});
+
+  final SSHSession session;
 
   final VirtualKeyboard keyboard;
 
@@ -12,22 +15,78 @@ class VirtualKeyboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: keyboard,
-      builder: (context, child) => ToggleButtons(
-        isSelected: [keyboard.ctrl, keyboard.alt, keyboard.shift],
-        onPressed: (index) {
-          switch (index) {
-            case 0:
-              keyboard.ctrl = !keyboard.ctrl;
-              break;
-            case 1:
-              keyboard.alt = !keyboard.alt;
-              break;
-            case 2:
-              keyboard.shift = !keyboard.shift;
-              break;
-          }
-        },
-        children: const [Text('Ctrl'), Text('Alt'), Text('Shift')],
+      builder: (context, child) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              ToggleButtons(
+                isSelected: [
+                  keyboard.ctrl,
+                  keyboard.alt,
+                  keyboard.shift,
+                ],
+                onPressed: (index) {
+                  switch (index) {
+                    case 0:
+                      keyboard.ctrl = !keyboard.ctrl;
+                      break;
+                    case 1:
+                      keyboard.alt = !keyboard.alt;
+                      break;
+                    case 2:
+                      keyboard.shift = !keyboard.shift;
+                      break;
+                    default:
+                      break;
+                  }
+                },
+                children: [
+                  Text('Ctrl'),
+                  Text('Alt'),
+                  Text('Shift'),
+                ],
+              ),
+              Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        session.write(Uint8List.fromList('\x1b'.codeUnits));
+                      },
+                      child: Text("ESC")),
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_upward,
+                    ),
+                    onPressed: () {
+                      session.write(Uint8List.fromList('\x1b[A'.codeUnits));
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                  IconButton(
+                      icon: const Icon(Icons.arrow_downward),
+                      onPressed: () {
+                        session.write(Uint8List.fromList('\x1b[B'.codeUnits));
+                      }),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      session.write(Uint8List.fromList('\x1b[D'.codeUnits));
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_forward),
+                    onPressed: () {
+                      session.write(Uint8List.fromList('\x1b[C'.codeUnits));
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }
@@ -36,7 +95,19 @@ class VirtualKeyboardView extends StatelessWidget {
 class VirtualKeyboard extends TerminalInputHandler with ChangeNotifier {
   final TerminalInputHandler _inputHandler;
 
-  VirtualKeyboard(this._inputHandler);
+  VirtualKeyboard(
+    this._inputHandler,
+  );
+  bool _esc = false;
+
+  bool get esc => _esc;
+
+  set esc(bool value) {
+    if (_esc != value) {
+      _esc = value;
+      notifyListeners();
+    }
+  }
 
   bool _ctrl = false;
 
@@ -68,6 +139,22 @@ class VirtualKeyboard extends TerminalInputHandler with ChangeNotifier {
     if (_alt != value) {
       _alt = value;
       notifyListeners();
+    }
+  }
+
+  void sendArrow(TerminalKey key, Terminal terminal) {
+    final event = TerminalKeyboardEvent(
+      key: key,
+      ctrl: _ctrl,
+      alt: _alt,
+      shift: _shift,
+      altBuffer: terminal.isUsingAltBuffer,
+      platform: terminal.platform,
+      state: terminal,
+    );
+    final sequence = _inputHandler.call(event);
+    if (sequence != null) {
+      terminal.write('\u001b[B');
     }
   }
 

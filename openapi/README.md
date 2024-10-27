@@ -73,17 +73,22 @@ Class | Method | HTTP request | Description
 [*HostsApi*](doc/HostsApi.md) | [**hostsControllerFindOne**](doc/HostsApi.md#hostscontrollerfindone) | **GET** /hosts/{id} | Get details of a host
 [*HostsApi*](doc/HostsApi.md) | [**hostsControllerRemove**](doc/HostsApi.md#hostscontrollerremove) | **DELETE** /hosts/{id} | Delete host
 [*HostsApi*](doc/HostsApi.md) | [**hostsControllerUpdate**](doc/HostsApi.md#hostscontrollerupdate) | **PATCH** /hosts/{id} | Update host
+[*KeysApi*](doc/KeysApi.md) | [**keysControllerCreate**](doc/KeysApi.md#keyscontrollercreate) | **POST** /keys | Create a key
+[*KeysApi*](doc/KeysApi.md) | [**keysControllerFindAll**](doc/KeysApi.md#keyscontrollerfindall) | **GET** /keys | Get all keys
 
 
 ## Documentation For Models
 
+ - [Count](doc/Count.md)
  - [CreateHostDto](doc/CreateHostDto.md)
+ - [CreateKeyDTO](doc/CreateKeyDTO.md)
  - [GenericErrorEntity](doc/GenericErrorEntity.md)
  - [GenericResponseDto](doc/GenericResponseDto.md)
  - [Host](doc/Host.md)
  - [LoginDTO](doc/LoginDTO.md)
  - [LoginEntity](doc/LoginEntity.md)
  - [PartialHost](doc/PartialHost.md)
+ - [PartialKey](doc/PartialKey.md)
  - [SignupDTO](doc/SignupDTO.md)
  - [SignupEntity](doc/SignupEntity.md)
  - [UpdateHostDto](doc/UpdateHostDto.md)

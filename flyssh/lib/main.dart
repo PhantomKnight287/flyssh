@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
               ),
               padding: WidgetStatePropertyAll(
                 EdgeInsets.all(
-                  isPhone(context) ? BASE_SPACE * 3 : BASE_SPACE * 5,
+                  isPhone() ? BASE_SPACE * 3 : BASE_SPACE * 5,
                 ),
               ),
             ),

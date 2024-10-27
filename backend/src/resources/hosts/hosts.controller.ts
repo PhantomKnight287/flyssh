@@ -72,8 +72,9 @@ export class HostsController {
   findAll(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Auth() auth: User,
   ) {
-    return this.hostsService.findAll({ page, limit });
+    return this.hostsService.findAll({ page, limit, userId: auth.id });
   }
 
   @ApiOperation({

@@ -7,13 +7,16 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(Count.serializer)
       ..add(CreateHostDto.serializer)
+      ..add(CreateKeyDTO.serializer)
       ..add(GenericErrorEntity.serializer)
       ..add(GenericResponseDto.serializer)
       ..add(Host.serializer)
       ..add(LoginDTO.serializer)
       ..add(LoginEntity.serializer)
       ..add(PartialHost.serializer)
+      ..add(PartialKey.serializer)
       ..add(SignupDTO.serializer)
       ..add(SignupEntity.serializer)
       ..add(UpdateHostDto.serializer)

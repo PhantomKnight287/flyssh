@@ -2,6 +2,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flyssh/components/bottom.dart';
 import 'package:flyssh/components/input.dart';
 import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/screens/hosts/service/main.dart';
@@ -85,7 +86,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
-    bool _isPhone = isPhone(context);
+    bool _isPhone = isPhone();
     return Scaffold(
       appBar: _isPhone
           ? AppBar(
@@ -93,6 +94,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                 "Add new host",
               ),
               centerTitle: false,
+              bottom: Bottom(context),
             )
           : null,
       body: SafeArea(

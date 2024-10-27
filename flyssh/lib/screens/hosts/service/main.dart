@@ -24,4 +24,13 @@ class HostsService {
     );
     return req.data!;
   }
+
+  static Future<GenericResponseDto> deleteHost(
+    String id,
+  ) async {
+    final req = await _hostsApi.hostsControllerRemove(
+      id: id,
+    );
+    return req.data!;
+  }
 }

@@ -44,8 +44,8 @@ async function bootstrap() {
       layout: 'modern',
       isEditable: false,
       metaData: {
-        title: 'Voice Learn',
-        description: 'Voice Learn API Documentation',
+        title: 'FlySSH',
+        description: 'A cross platform SSH client',
       },
     }),
   );

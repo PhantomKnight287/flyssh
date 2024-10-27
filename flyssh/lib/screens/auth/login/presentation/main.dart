@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: isPhone(context) ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  mainAxisAlignment: isPhone() ? MainAxisAlignment.start : MainAxisAlignment.center,
                   children: [
                     Text(
                       "Lets sign you in",
