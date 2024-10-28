@@ -655,6 +655,21 @@
           "id"
         ]
       },
+      "PartialKeyWithoutCount": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "id"
+        ]
+      },
       "PartialHost": {
         "type": "object",
         "properties": {
@@ -672,6 +687,12 @@
           },
           "hostname": {
             "type": "string"
+          },
+          "key": {
+            "$ref": "#/components/schemas/PartialKeyWithoutCount"
+          },
+          "iv": {
+            "type": "string"
           }
         },
         "required": [
@@ -679,7 +700,34 @@
           "label",
           "username",
           "port",
-          "hostname"
+          "hostname",
+          "iv"
+        ]
+      },
+      "KeyEntity": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "passphrase": {
+            "type": "string"
+          },
+          "iv": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "id",
+          "value",
+          "iv"
         ]
       },
       "Host": {
@@ -700,12 +748,15 @@
           "hostname": {
             "type": "string"
           },
+          "iv": {
+            "type": "string"
+          },
           "password": {
             "type": "string",
             "nullable": true
           },
-          "iv": {
-            "type": "string"
+          "key": {
+            "$ref": "#/components/schemas/KeyEntity"
           }
         },
         "required": [

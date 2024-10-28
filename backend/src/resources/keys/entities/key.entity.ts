@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 
 class Count {
   @ApiProperty({ description: 'No of hosts using this key' })
@@ -14,4 +14,15 @@ export class PartialKey {
 
   @ApiProperty({ type: Count })
   _count: Count;
+}
+
+export class KeyEntity extends OmitType(PartialKey, ['_count']) {
+  @ApiProperty({ type: String })
+  value: string;
+
+  @ApiPropertyOptional()
+  passphrase?: string;
+
+  @ApiProperty({ type: String })
+  iv: string;
 }

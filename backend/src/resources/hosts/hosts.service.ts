@@ -61,6 +61,13 @@ export class HostsService {
         username: true,
         port: true,
         hostname: true,
+        iv: true,
+        key: {
+          select: {
+            id: true,
+            label: true,
+          },
+        },
       },
       where: {
         ownerId: userId,
@@ -79,6 +86,17 @@ export class HostsService {
       where: {
         id,
         ownerId: userId,
+      },
+      include: {
+        key: {
+          select: {
+            id: true,
+            label: true,
+            iv: true,
+            value: true,
+            passphrase: true,
+          },
+        },
       },
     });
     if (!host) throw new HttpException('No host found', HttpStatus.NOT_FOUND);
@@ -102,6 +120,8 @@ export class HostsService {
         username: updateHostDto.username,
         password: updateHostDto.password,
         keyId: updateHostDto.keyId,
+        port: updateHostDto.port,
+        hostname: updateHostDto.hostname,
       },
       select: { id: true },
     });

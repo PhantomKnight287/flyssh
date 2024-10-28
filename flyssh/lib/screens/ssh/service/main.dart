@@ -13,7 +13,7 @@ class HostService {
       id: id,
     );
     final encryptedHostData = req.data!;
-    if (encryptedHostData.password == null) return encryptedHostData;
+
     const storage = FlutterSecureStorage();
 
     final encryter = encrypt.Encrypter(
@@ -27,22 +27,54 @@ class HostService {
       ),
     );
 
-    final decryptedPassword = encryter.decrypt64(
-      encryptedHostData.password!,
-      iv: encrypt.IV.fromBase64(
-        encryptedHostData.iv,
-      ),
-    );
+    final decryptedPassword = encryptedHostData.password != null
+        ? encryter.decrypt64(
+            encryptedHostData.password!,
+            iv: encrypt.IV.fromBase64(
+              encryptedHostData.iv,
+            ),
+          )
+        : null;
+    String? decryptedKey;
+    String? decryptedPassphrase;
+    if (encryptedHostData.key != null) {
+      decryptedKey = encryter.decrypt64(
+        encryptedHostData.key!.value,
+        iv: encrypt.IV.fromBase64(
+          encryptedHostData.key!.iv,
+        ),
+      );
+      if (encryptedHostData.key!.passphrase != null) {
+        decryptedPassphrase = encryter.decrypt64(
+          encryptedHostData.key!.passphrase!,
+          iv: encrypt.IV.fromBase64(
+            encryptedHostData.key!.iv,
+          ),
+        );
+      }
+    }
+
     return Host(
       (b) {
+        final key = encryptedHostData.key == null
+            ? null
+            : (KeyEntityBuilder()
+              ..id = encryptedHostData.key!.id
+              ..label = encryptedHostData.key!.label
+              ..value = decryptedKey!
+              ..passphrase = decryptedPassphrase
+              ..iv = encryptedHostData.key!.iv
+              ..build());
+
         b
           ..id = encryptedHostData.id
           ..label = encryptedHostData.label
-          ..password = decryptedPassword.trim()
+          ..password = decryptedPassword
           ..port = encryptedHostData.port
           ..username = encryptedHostData.username
           ..iv = encryptedHostData.iv
           ..hostname = encryptedHostData.hostname
+          ..key = encryptedHostData.key == null ? null : key
           ..build();
       },
     );

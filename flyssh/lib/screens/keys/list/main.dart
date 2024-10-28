@@ -132,6 +132,8 @@ class KeyItem extends StatelessWidget {
     return ListTile(
       title: Text(
         sshKey.label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.w800,
             ),
@@ -142,6 +144,8 @@ class KeyItem extends StatelessWidget {
       ),
       subtitle: Text(
         "Used by ${sshKey.count.hosts} ${pluralize(sshKey.count.hosts, "host")}",
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           color: Colors.grey,
         ),

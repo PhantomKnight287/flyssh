@@ -17,6 +17,10 @@ class _$PartialHost extends PartialHost {
   final num port;
   @override
   final String hostname;
+  @override
+  final PartialKeyWithoutCount? key;
+  @override
+  final String iv;
 
   factory _$PartialHost([void Function(PartialHostBuilder)? updates]) =>
       (new PartialHostBuilder()..update(updates))._build();
@@ -26,13 +30,16 @@ class _$PartialHost extends PartialHost {
       required this.label,
       required this.username,
       required this.port,
-      required this.hostname})
+      required this.hostname,
+      this.key,
+      required this.iv})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'PartialHost', 'id');
     BuiltValueNullFieldError.checkNotNull(label, r'PartialHost', 'label');
     BuiltValueNullFieldError.checkNotNull(username, r'PartialHost', 'username');
     BuiltValueNullFieldError.checkNotNull(port, r'PartialHost', 'port');
     BuiltValueNullFieldError.checkNotNull(hostname, r'PartialHost', 'hostname');
+    BuiltValueNullFieldError.checkNotNull(iv, r'PartialHost', 'iv');
   }
 
   @override
@@ -50,7 +57,9 @@ class _$PartialHost extends PartialHost {
         label == other.label &&
         username == other.username &&
         port == other.port &&
-        hostname == other.hostname;
+        hostname == other.hostname &&
+        key == other.key &&
+        iv == other.iv;
   }
 
   @override
@@ -61,6 +70,8 @@ class _$PartialHost extends PartialHost {
     _$hash = $jc(_$hash, username.hashCode);
     _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jc(_$hash, hostname.hashCode);
+    _$hash = $jc(_$hash, key.hashCode);
+    _$hash = $jc(_$hash, iv.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -72,7 +83,9 @@ class _$PartialHost extends PartialHost {
           ..add('label', label)
           ..add('username', username)
           ..add('port', port)
-          ..add('hostname', hostname))
+          ..add('hostname', hostname)
+          ..add('key', key)
+          ..add('iv', iv))
         .toString();
   }
 }
@@ -100,6 +113,15 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
   String? get hostname => _$this._hostname;
   set hostname(String? hostname) => _$this._hostname = hostname;
 
+  PartialKeyWithoutCountBuilder? _key;
+  PartialKeyWithoutCountBuilder get key =>
+      _$this._key ??= new PartialKeyWithoutCountBuilder();
+  set key(PartialKeyWithoutCountBuilder? key) => _$this._key = key;
+
+  String? _iv;
+  String? get iv => _$this._iv;
+  set iv(String? iv) => _$this._iv = iv;
+
   PartialHostBuilder() {
     PartialHost._defaults(this);
   }
@@ -112,6 +134,8 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
       _username = $v.username;
       _port = $v.port;
       _hostname = $v.hostname;
+      _key = $v.key?.toBuilder();
+      _iv = $v.iv;
       _$v = null;
     }
     return this;
@@ -132,17 +156,34 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
   PartialHost build() => _build();
 
   _$PartialHost _build() {
-    final _$result = _$v ??
-        new _$PartialHost._(
-            id: BuiltValueNullFieldError.checkNotNull(id, r'PartialHost', 'id'),
-            label: BuiltValueNullFieldError.checkNotNull(
-                label, r'PartialHost', 'label'),
-            username: BuiltValueNullFieldError.checkNotNull(
-                username, r'PartialHost', 'username'),
-            port: BuiltValueNullFieldError.checkNotNull(
-                port, r'PartialHost', 'port'),
-            hostname: BuiltValueNullFieldError.checkNotNull(
-                hostname, r'PartialHost', 'hostname'));
+    _$PartialHost _$result;
+    try {
+      _$result = _$v ??
+          new _$PartialHost._(
+              id: BuiltValueNullFieldError.checkNotNull(
+                  id, r'PartialHost', 'id'),
+              label: BuiltValueNullFieldError.checkNotNull(
+                  label, r'PartialHost', 'label'),
+              username: BuiltValueNullFieldError.checkNotNull(
+                  username, r'PartialHost', 'username'),
+              port: BuiltValueNullFieldError.checkNotNull(
+                  port, r'PartialHost', 'port'),
+              hostname: BuiltValueNullFieldError.checkNotNull(
+                  hostname, r'PartialHost', 'hostname'),
+              key: _key?.build(),
+              iv: BuiltValueNullFieldError.checkNotNull(
+                  iv, r'PartialHost', 'iv'));
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'key';
+        _key?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            r'PartialHost', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

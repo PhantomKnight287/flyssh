@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:openapi/src/model/partial_key_without_count.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -16,6 +17,8 @@ part 'partial_host.g.dart';
 /// * [username] 
 /// * [port] 
 /// * [hostname] 
+/// * [key] 
+/// * [iv] 
 @BuiltValue()
 abstract class PartialHost implements Built<PartialHost, PartialHostBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -32,6 +35,12 @@ abstract class PartialHost implements Built<PartialHost, PartialHostBuilder> {
 
   @BuiltValueField(wireName: r'hostname')
   String get hostname;
+
+  @BuiltValueField(wireName: r'key')
+  PartialKeyWithoutCount? get key;
+
+  @BuiltValueField(wireName: r'iv')
+  String get iv;
 
   PartialHost._();
 
@@ -79,6 +88,18 @@ class _$PartialHostSerializer implements PrimitiveSerializer<PartialHost> {
     yield r'hostname';
     yield serializers.serialize(
       object.hostname,
+      specifiedType: const FullType(String),
+    );
+    if (object.key != null) {
+      yield r'key';
+      yield serializers.serialize(
+        object.key,
+        specifiedType: const FullType(PartialKeyWithoutCount),
+      );
+    }
+    yield r'iv';
+    yield serializers.serialize(
+      object.iv,
       specifiedType: const FullType(String),
     );
   }
@@ -138,6 +159,20 @@ class _$PartialHostSerializer implements PrimitiveSerializer<PartialHost> {
             specifiedType: const FullType(String),
           ) as String;
           result.hostname = valueDes;
+          break;
+        case r'key':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(PartialKeyWithoutCount),
+          ) as PartialKeyWithoutCount;
+          result.key.replace(valueDes);
+          break;
+        case r'iv':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.iv = valueDes;
           break;
         default:
           unhandled.add(key);

@@ -3,122 +3,92 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:openapi/src/model/key_entity.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-part 'host.g.dart';
+part 'key_entity.g.dart';
 
-/// Host
+/// KeyEntity
 ///
 /// Properties:
-/// * [id] 
 /// * [label] 
-/// * [username] 
-/// * [port] 
-/// * [hostname] 
+/// * [id] 
+/// * [value] 
+/// * [passphrase] 
 /// * [iv] 
-/// * [password] 
-/// * [key] 
 @BuiltValue()
-abstract class Host implements Built<Host, HostBuilder> {
-  @BuiltValueField(wireName: r'id')
-  String get id;
-
+abstract class KeyEntity implements Built<KeyEntity, KeyEntityBuilder> {
   @BuiltValueField(wireName: r'label')
   String get label;
 
-  @BuiltValueField(wireName: r'username')
-  String get username;
+  @BuiltValueField(wireName: r'id')
+  String get id;
 
-  @BuiltValueField(wireName: r'port')
-  num get port;
+  @BuiltValueField(wireName: r'value')
+  String get value;
 
-  @BuiltValueField(wireName: r'hostname')
-  String get hostname;
+  @BuiltValueField(wireName: r'passphrase')
+  String? get passphrase;
 
   @BuiltValueField(wireName: r'iv')
   String get iv;
 
-  @BuiltValueField(wireName: r'password')
-  String? get password;
+  KeyEntity._();
 
-  @BuiltValueField(wireName: r'key')
-  KeyEntity? get key;
-
-  Host._();
-
-  factory Host([void updates(HostBuilder b)]) = _$Host;
+  factory KeyEntity([void updates(KeyEntityBuilder b)]) = _$KeyEntity;
 
   @BuiltValueHook(initializeBuilder: true)
-  static void _defaults(HostBuilder b) => b;
+  static void _defaults(KeyEntityBuilder b) => b;
 
   @BuiltValueSerializer(custom: true)
-  static Serializer<Host> get serializer => _$HostSerializer();
+  static Serializer<KeyEntity> get serializer => _$KeyEntitySerializer();
 }
 
-class _$HostSerializer implements PrimitiveSerializer<Host> {
+class _$KeyEntitySerializer implements PrimitiveSerializer<KeyEntity> {
   @override
-  final Iterable<Type> types = const [Host, _$Host];
+  final Iterable<Type> types = const [KeyEntity, _$KeyEntity];
 
   @override
-  final String wireName = r'Host';
+  final String wireName = r'KeyEntity';
 
   Iterable<Object?> _serializeProperties(
     Serializers serializers,
-    Host object, {
+    KeyEntity object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
-    yield r'id';
-    yield serializers.serialize(
-      object.id,
-      specifiedType: const FullType(String),
-    );
     yield r'label';
     yield serializers.serialize(
       object.label,
       specifiedType: const FullType(String),
     );
-    yield r'username';
+    yield r'id';
     yield serializers.serialize(
-      object.username,
+      object.id,
       specifiedType: const FullType(String),
     );
-    yield r'port';
+    yield r'value';
     yield serializers.serialize(
-      object.port,
-      specifiedType: const FullType(num),
-    );
-    yield r'hostname';
-    yield serializers.serialize(
-      object.hostname,
+      object.value,
       specifiedType: const FullType(String),
     );
+    if (object.passphrase != null) {
+      yield r'passphrase';
+      yield serializers.serialize(
+        object.passphrase,
+        specifiedType: const FullType(String),
+      );
+    }
     yield r'iv';
     yield serializers.serialize(
       object.iv,
       specifiedType: const FullType(String),
     );
-    if (object.password != null) {
-      yield r'password';
-      yield serializers.serialize(
-        object.password,
-        specifiedType: const FullType.nullable(String),
-      );
-    }
-    if (object.key != null) {
-      yield r'key';
-      yield serializers.serialize(
-        object.key,
-        specifiedType: const FullType(KeyEntity),
-      );
-    }
   }
 
   @override
   Object serialize(
     Serializers serializers,
-    Host object, {
+    KeyEntity object, {
     FullType specifiedType = FullType.unspecified,
   }) {
     return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
@@ -129,20 +99,13 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
     required List<Object?> serializedList,
-    required HostBuilder result,
+    required KeyEntityBuilder result,
     required List<Object?> unhandled,
   }) {
     for (var i = 0; i < serializedList.length; i += 2) {
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
-        case r'id':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(String),
-          ) as String;
-          result.id = valueDes;
-          break;
         case r'label':
           final valueDes = serializers.deserialize(
             value,
@@ -150,26 +113,26 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
           ) as String;
           result.label = valueDes;
           break;
-        case r'username':
+        case r'id':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(String),
           ) as String;
-          result.username = valueDes;
+          result.id = valueDes;
           break;
-        case r'port':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(num),
-          ) as num;
-          result.port = valueDes;
-          break;
-        case r'hostname':
+        case r'value':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(String),
           ) as String;
-          result.hostname = valueDes;
+          result.value = valueDes;
+          break;
+        case r'passphrase':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.passphrase = valueDes;
           break;
         case r'iv':
           final valueDes = serializers.deserialize(
@@ -177,21 +140,6 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
             specifiedType: const FullType(String),
           ) as String;
           result.iv = valueDes;
-          break;
-        case r'password':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType.nullable(String),
-          ) as String?;
-          if (valueDes == null) continue;
-          result.password = valueDes;
-          break;
-        case r'key':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(KeyEntity),
-          ) as KeyEntity;
-          result.key.replace(valueDes);
           break;
         default:
           unhandled.add(key);
@@ -202,12 +150,12 @@ class _$HostSerializer implements PrimitiveSerializer<Host> {
   }
 
   @override
-  Host deserialize(
+  KeyEntity deserialize(
     Serializers serializers,
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    final result = HostBuilder();
+    final result = KeyEntityBuilder();
     final serializedList = (serialized as Iterable<Object?>).toList();
     final unhandled = <Object?>[];
     _deserializeProperties(

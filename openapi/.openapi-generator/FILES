@@ -10,11 +10,13 @@ doc/GenericErrorEntity.md
 doc/GenericResponseDto.md
 doc/Host.md
 doc/HostsApi.md
+doc/KeyEntity.md
 doc/KeysApi.md
 doc/LoginDTO.md
 doc/LoginEntity.md
 doc/PartialHost.md
 doc/PartialKey.md
+doc/PartialKeyWithoutCount.md
 doc/SignupDTO.md
 doc/SignupEntity.md
 doc/UpdateHostDto.md
@@ -39,10 +41,12 @@ lib/src/model/date.dart
 lib/src/model/generic_error_entity.dart
 lib/src/model/generic_response_dto.dart
 lib/src/model/host.dart
+lib/src/model/key_entity.dart
 lib/src/model/login_dto.dart
 lib/src/model/login_entity.dart
 lib/src/model/partial_host.dart
 lib/src/model/partial_key.dart
+lib/src/model/partial_key_without_count.dart
 lib/src/model/signup_dto.dart
 lib/src/model/signup_entity.dart
 lib/src/model/update_host_dto.dart

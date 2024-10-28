@@ -312,12 +312,26 @@ class _HostItemState extends State<HostItem> {
   @override
   void initState() {
     super.initState();
-    _entries = <ContextMenuEntry>[
+    _entries = [
       MenuItem(
         label: 'Edit',
         icon: Icons.edit,
         onSelected: () {
-          // implement copy
+          print("ok");
+          if (isPhone()) Navigator.pop(context);
+          Navigator.of(context).push(
+            CustomCupertinoRoute(
+              builder: (context) {
+                return CreateHostsScreen(
+                  host: widget.host,
+                );
+              },
+            ),
+          ).then(
+            (value) {
+              widget.pagingController.refresh();
+            },
+          );
         },
       ),
       MenuItem(
@@ -444,6 +458,8 @@ class _HostItemState extends State<HostItem> {
             }
           : null,
       title: Text(
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         widget.host.label,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.w800,
@@ -455,6 +471,8 @@ class _HostItemState extends State<HostItem> {
       ),
       subtitle: Text(
         "username: ${widget.host.username}",
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
         style: const TextStyle(
           color: Colors.grey,
         ),

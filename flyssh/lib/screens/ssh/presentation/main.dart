@@ -4,12 +4,14 @@ import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/models/theme.dart';
 import 'package:flyssh/screens/ssh/presentation/virtual_keyboard.dart';
 import 'package:flyssh/screens/ssh/service/main.dart';
 import 'package:flyssh/utils/device.dart';
 import 'package:window_size/window_size.dart';
 import 'package:xterm/xterm.dart';
+import 'package:gap/gap.dart';
 
 class SshScreen extends StatefulWidget {
   const SshScreen({
@@ -44,7 +46,6 @@ class SshScreenState extends State<SshScreen> {
       final host = await HostService.getHostInfo(
         widget.id,
       );
-      final cleanPassword = host.password!.replaceAll(String.fromCharCode(8), '').trim();
       client = SSHClient(
         await SSHSocket.connect(
           host.hostname,
@@ -52,8 +53,14 @@ class SshScreenState extends State<SshScreen> {
         ),
         username: host.username,
         onPasswordRequest: () {
-          return cleanPassword;
+          return host.password?.replaceAll(String.fromCharCode(8), '').replaceAll(String.fromCharCode(2), '').trim();
         },
+        identities: host.key != null
+            ? SSHKeyPair.fromPem(
+                host.key!.value.replaceAll(String.fromCharCode(8), '').replaceAll(String.fromCharCode(2), '').trim(),
+                host.key!.passphrase?.replaceAll(String.fromCharCode(8), '').replaceAll(String.fromCharCode(2), '').trim(),
+              )
+            : [],
       );
 
       session = await client.shell(
@@ -74,8 +81,7 @@ class SshScreenState extends State<SshScreen> {
       session!.stdout.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
       session!.stderr.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
 
-      terminal.write("Connected\r\n");
-      // terminal.buffer.clear();
+      terminal.buffer.clear();
       terminal.buffer.setCursor(0, 0);
 
       terminal.onTitleChange = (title) async {
@@ -158,16 +164,61 @@ class SshScreenState extends State<SshScreen> {
     }
 
     if (error != null) {
-      return Padding(
-        padding: const EdgeInsets.all(
-          8.0,
-        ),
-        child: Center(
-          child: Text(
-            error!,
-            textAlign: TextAlign.center,
+      return Column(
+        children: [
+          if (!isPhone())
+            Builder(
+              builder: (context) {
+                return Column(
+                  children: [
+                    const Gap(
+                      BASE_SPACE * 4,
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          tooltip: "Back",
+                          onPressed: Navigator.of(context).pop,
+                          icon: const Icon(
+                            Icons.arrow_back_rounded,
+                          ),
+                          style: const ButtonStyle(
+                            minimumSize: WidgetStatePropertyAll(
+                              Size(
+                                0,
+                                0,
+                              ),
+                            ),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: WidgetStatePropertyAll(
+                              EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                        const Gap(
+                          BASE_SPACE * 2,
+                        ),
+                      ],
+                    ),
+                    const Gap(
+                      BASE_SPACE * 4,
+                    ),
+                  ],
+                );
+              },
+            ),
+          Padding(
+            padding: const EdgeInsets.all(
+              8.0,
+            ),
+            child: Center(
+              child: Text(
+                error!,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
-        ),
+        ],
       );
     }
 

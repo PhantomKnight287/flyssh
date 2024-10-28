@@ -33,10 +33,11 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
       _usernameController = TextEditingController(),
       _passwordController = TextEditingController(),
       _portController = TextEditingController.fromValue(
-        TextEditingValue(
+        const TextEditingValue(
           text: '22',
         ),
-      );
+      ),
+      _keyController = TextEditingController();
   bool _loading = false;
   bool _passwordShown = false;
   KeyResponse? _selectedKey;
@@ -63,31 +64,61 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
           ),
         ),
       );
-      final iv = encrypt.IV.fromLength(16);
-      final req = await HostsService.createHost(
-        CreateHostDto(
-          (b) {
-            b
-              ..hostname = _hostnameController.text.trim()
-              ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Host'
-              ..username = _usernameController.text.trim()
-              ..port = int.parse(_portController.text.trim())
-              ..iv = iv.base64;
-            if (_selectedKey != null) b.keyId = _selectedKey!.id;
-            if (_passwordController.text.trim().isNotEmpty && !_passwordController.text.trim().startsWith("Using Key:")) {
-              b.password = encrypter
-                  .encrypt(
-                    _passwordController.text.trim(),
-                    iv: iv,
-                  )
-                  .base64;
-            }
-            b.build();
-          },
-        ),
-      );
+      final iv = widget.host != null
+          ? encrypt.IV.fromBase64(
+              widget.host!.iv,
+            )
+          : encrypt.IV.fromLength(16);
+      if (widget.host != null) {
+        await HostsService.updateHost(
+          widget.host!.id,
+          UpdateHostDto(
+            (b) {
+              b
+                ..hostname = _hostnameController.text.trim()
+                ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Host'
+                ..username = _usernameController.text.trim()
+                ..port = int.parse(_portController.text.trim())
+                ..iv = iv.base64;
+              if (_selectedKey != null) b.keyId = _selectedKey!.id;
+              if (_passwordController.text.trim().isNotEmpty) {
+                b.password = encrypter
+                    .encrypt(
+                      _passwordController.text.trim(),
+                      iv: iv,
+                    )
+                    .base64;
+              }
+              b.build();
+            },
+          ),
+        );
+      } else {
+        final req = await HostsService.createHost(
+          CreateHostDto(
+            (b) {
+              b
+                ..hostname = _hostnameController.text.trim()
+                ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Host'
+                ..username = _usernameController.text.trim()
+                ..port = int.parse(_portController.text.trim())
+                ..iv = iv.base64;
+              if (_selectedKey != null) b.keyId = _selectedKey!.id;
+              if (_passwordController.text.trim().isNotEmpty) {
+                b.password = encrypter
+                    .encrypt(
+                      _passwordController.text.trim(),
+                      iv: iv,
+                    )
+                    .base64;
+              }
+              b.build();
+            },
+          ),
+        );
+      }
       showSuccessToast(
-        title: "Host Added",
+        title: "Host ${widget.host != null ? "Updated" : "Created"}",
       );
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -115,6 +146,16 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
       _labelController.text = widget.host!.label;
       _hostnameController.text = widget.host!.hostname;
       _usernameController.text = widget.host!.username;
+      _portController.text = widget.host!.port.toString();
+      if (widget.host!.key != null) {
+        _keyController.text = "Using Key: ${widget.host!.key!.label}";
+        setState(() {
+          _selectedKey = KeyResponse(
+            id: widget.host!.key!.id,
+            label: widget.host!.key!.label,
+          );
+        });
+      }
     }
   }
 
@@ -125,8 +166,8 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
     return Scaffold(
       appBar: _isPhone
           ? AppBar(
-              title: const Text(
-                "Add new host",
+              title: Text(
+                "${widget.host != null ? "Update" : "Create new"} host",
               ),
               centerTitle: false,
               bottom: Bottom(context),
@@ -180,7 +221,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                                       BASE_SPACE * 2,
                                     ),
                                     Text(
-                                      "Add new host",
+                                      "${widget.host != null ? "Update" : "Create new"} host",
                                       style: Theme.of(context).textTheme.titleLarge,
                                     ),
                                   ],
@@ -280,115 +321,61 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                       const Gap(
                         BASE_SPACE * 4,
                       ),
+                      if (_selectedKey != null)
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "SSH Key",
+                                  style: TextStyle(
+                                    fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                _buildKeyButton(
+                                  context,
+                                  title: "Change key",
+                                )
+                              ],
+                            ),
+                            const Gap(
+                              BASE_SPACE * 2,
+                            ),
+                            InputField(
+                              hintText: "SSH Key",
+                              keyboardType: TextInputType.name,
+                              controller: _keyController,
+                              obscureText: false,
+                              enabled: _selectedKey == null,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _passwordShown ? Icons.visibility_off : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _passwordShown = !_passwordShown;
+                                  });
+                                },
+                              ),
+                            ),
+                            const Gap(
+                              BASE_SPACE * 4,
+                            ),
+                          ],
+                        ),
                       Row(
                         children: [
                           Text(
-                            "Credentials",
+                            "Password",
                             style: TextStyle(
                               fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const Spacer(),
-                          OutlinedButton(
-                            onPressed: () {
-                              WoltModalSheet.show(
-                                context: context,
-                                pageListBuilder: (context) {
-                                  return [
-                                    WoltModalSheetPage(
-                                      topBarTitle: Text(
-                                        "Use a key",
-                                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                              color: Colors.black,
-                                            ),
-                                      ),
-                                      isTopBarLayerAlwaysVisible: true,
-                                      trailingNavBarWidget: IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: Navigator.of(context).pop,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                final response = await Navigator.of(context).push<KeyResponse>(
-                                                  CupertinoModalPopupRoute(
-                                                    builder: (context) => CreateKeyScreen(),
-                                                  ),
-                                                );
-                                                if (response != null) {
-                                                  _passwordController.text = "Using Key: ${response.label}";
-                                                  setState(() {
-                                                    _selectedKey = response;
-                                                  });
-                                                }
-                                              },
-                                              child: Text(
-                                                "Create new key",
-                                              ),
-                                            ),
-                                            const Gap(
-                                              BASE_SPACE * 4,
-                                            ),
-                                            OutlinedButton(
-                                              onPressed: () {
-                                                WoltModalSheet.of(context).showAtIndex(2);
-                                              },
-                                              style: ButtonStyle(
-                                                foregroundColor: WidgetStatePropertyAll(
-                                                  Colors.black,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                "Select existing key",
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ];
-                                },
-                              );
-                            },
-                            style: ButtonStyle(
-                              minimumSize: const WidgetStatePropertyAll(
-                                Size(
-                                  0,
-                                  0,
-                                ),
-                              ), // Removes the minimum size constraint
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              side: WidgetStatePropertyAll(
-                                BorderSide(
-                                  color: Colors.grey.shade300,
-                                ),
-                              ),
-                              padding: WidgetStatePropertyAll(
-                                EdgeInsets.symmetric(
-                                  horizontal: BASE_SPACE * 2,
-                                  vertical: BASE_SPACE,
-                                ),
-                              ),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    8,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            child: const Text(
-                              "Use a key",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          )
+                          if (_selectedKey == null) _buildKeyButton(context)
                         ],
                       ),
                       const Gap(
@@ -398,10 +385,9 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                         hintText: "abandoned_project",
                         keyboardType: TextInputType.name,
                         controller: _passwordController,
-                        obscureText: _selectedKey == null ? !_passwordShown : false,
-                        enabled: _selectedKey == null,
+                        obscureText: !_passwordShown,
                         validator: (p0) {
-                          if (p0 == null || p0.isEmpty) return "Please enter login password or choose a key";
+                          if ((p0 == null || p0.isEmpty) && _selectedKey == null) return "Please enter login password or choose a key";
                           return null;
                         },
                         suffixIcon: IconButton(
@@ -427,8 +413,8 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                             ? const CupertinoActivityIndicator(
                                 color: Colors.white,
                               )
-                            : const Text(
-                                "Add",
+                            : Text(
+                                widget.host != null ? "Update" : "Add",
                               ),
                       ),
                     ],
@@ -437,6 +423,108 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  OutlinedButton _buildKeyButton(BuildContext context, {String title = "Use a key"}) {
+    return OutlinedButton(
+      onPressed: () {
+        WoltModalSheet.show(
+          context: context,
+          pageListBuilder: (context) {
+            return [
+              WoltModalSheetPage(
+                topBarTitle: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+                isTopBarLayerAlwaysVisible: true,
+                trailingNavBarWidget: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: Navigator.of(context).pop,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final response = await Navigator.of(context).push<KeyResponse>(
+                            CupertinoModalPopupRoute(
+                              builder: (context) => const CreateKeyScreen(),
+                            ),
+                          );
+                          if (response != null) {
+                            _keyController.text = "Using Key: ${response.label}";
+                            setState(() {
+                              _selectedKey = response;
+                            });
+                          }
+                        },
+                        child: const Text(
+                          "Create new key",
+                        ),
+                      ),
+                      const Gap(
+                        BASE_SPACE * 4,
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          WoltModalSheet.of(context).showAtIndex(2);
+                        },
+                        style: const ButtonStyle(
+                          foregroundColor: WidgetStatePropertyAll(
+                            Colors.black,
+                          ),
+                        ),
+                        child: const Text(
+                          "Select existing key",
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ];
+          },
+        );
+      },
+      style: ButtonStyle(
+        minimumSize: const WidgetStatePropertyAll(
+          Size(
+            0,
+            0,
+          ),
+        ), // Removes the minimum size constraint
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        side: WidgetStatePropertyAll(
+          BorderSide(
+            color: Colors.grey.shade300,
+          ),
+        ),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(
+            horizontal: BASE_SPACE * 2,
+            vertical: BASE_SPACE,
+          ),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              8,
+            ),
+          ),
+        ),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.black,
         ),
       ),
     );

@@ -33,4 +33,15 @@ class HostsService {
     );
     return req.data!;
   }
+
+  static Future<GenericResponseDto> updateHost(
+    String id,
+    UpdateHostDto body,
+  ) async {
+    final req = await _hostsApi.hostsControllerUpdate(
+      id: id,
+      updateHostDto: body,
+    );
+    return req.data!;
+  }
 }

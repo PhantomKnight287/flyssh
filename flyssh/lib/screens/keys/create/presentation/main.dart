@@ -49,7 +49,14 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
         CreateKeyDTO(
           (b) {
             b
-              ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Key'
+              ..label = _labelController.text.trim().isNotEmpty
+                  ? encrypter
+                      .encrypt(
+                        _labelController.text.trim(),
+                        iv: iv,
+                      )
+                      .base64
+                  : 'Key'
               ..passphrase = _passphraseController.text.trim().isNotEmpty ? _passphraseController.text.trim() : null
               ..value = encrypter
                   .encrypt(

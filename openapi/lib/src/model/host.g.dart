@@ -18,9 +18,11 @@ class _$Host extends Host {
   @override
   final String hostname;
   @override
+  final String iv;
+  @override
   final String? password;
   @override
-  final String iv;
+  final KeyEntity? key;
 
   factory _$Host([void Function(HostBuilder)? updates]) =>
       (new HostBuilder()..update(updates))._build();
@@ -31,8 +33,9 @@ class _$Host extends Host {
       required this.username,
       required this.port,
       required this.hostname,
+      required this.iv,
       this.password,
-      required this.iv})
+      this.key})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'Host', 'id');
     BuiltValueNullFieldError.checkNotNull(label, r'Host', 'label');
@@ -58,8 +61,9 @@ class _$Host extends Host {
         username == other.username &&
         port == other.port &&
         hostname == other.hostname &&
+        iv == other.iv &&
         password == other.password &&
-        iv == other.iv;
+        key == other.key;
   }
 
   @override
@@ -70,8 +74,9 @@ class _$Host extends Host {
     _$hash = $jc(_$hash, username.hashCode);
     _$hash = $jc(_$hash, port.hashCode);
     _$hash = $jc(_$hash, hostname.hashCode);
-    _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jc(_$hash, iv.hashCode);
+    _$hash = $jc(_$hash, password.hashCode);
+    _$hash = $jc(_$hash, key.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -84,8 +89,9 @@ class _$Host extends Host {
           ..add('username', username)
           ..add('port', port)
           ..add('hostname', hostname)
+          ..add('iv', iv)
           ..add('password', password)
-          ..add('iv', iv))
+          ..add('key', key))
         .toString();
   }
 }
@@ -113,13 +119,17 @@ class HostBuilder implements Builder<Host, HostBuilder> {
   String? get hostname => _$this._hostname;
   set hostname(String? hostname) => _$this._hostname = hostname;
 
+  String? _iv;
+  String? get iv => _$this._iv;
+  set iv(String? iv) => _$this._iv = iv;
+
   String? _password;
   String? get password => _$this._password;
   set password(String? password) => _$this._password = password;
 
-  String? _iv;
-  String? get iv => _$this._iv;
-  set iv(String? iv) => _$this._iv = iv;
+  KeyEntityBuilder? _key;
+  KeyEntityBuilder get key => _$this._key ??= new KeyEntityBuilder();
+  set key(KeyEntityBuilder? key) => _$this._key = key;
 
   HostBuilder() {
     Host._defaults(this);
@@ -133,8 +143,9 @@ class HostBuilder implements Builder<Host, HostBuilder> {
       _username = $v.username;
       _port = $v.port;
       _hostname = $v.hostname;
-      _password = $v.password;
       _iv = $v.iv;
+      _password = $v.password;
+      _key = $v.key?.toBuilder();
       _$v = null;
     }
     return this;
@@ -155,18 +166,33 @@ class HostBuilder implements Builder<Host, HostBuilder> {
   Host build() => _build();
 
   _$Host _build() {
-    final _$result = _$v ??
-        new _$Host._(
-            id: BuiltValueNullFieldError.checkNotNull(id, r'Host', 'id'),
-            label:
-                BuiltValueNullFieldError.checkNotNull(label, r'Host', 'label'),
-            username: BuiltValueNullFieldError.checkNotNull(
-                username, r'Host', 'username'),
-            port: BuiltValueNullFieldError.checkNotNull(port, r'Host', 'port'),
-            hostname: BuiltValueNullFieldError.checkNotNull(
-                hostname, r'Host', 'hostname'),
-            password: password,
-            iv: BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv'));
+    _$Host _$result;
+    try {
+      _$result = _$v ??
+          new _$Host._(
+              id: BuiltValueNullFieldError.checkNotNull(id, r'Host', 'id'),
+              label: BuiltValueNullFieldError.checkNotNull(
+                  label, r'Host', 'label'),
+              username: BuiltValueNullFieldError.checkNotNull(
+                  username, r'Host', 'username'),
+              port:
+                  BuiltValueNullFieldError.checkNotNull(port, r'Host', 'port'),
+              hostname: BuiltValueNullFieldError.checkNotNull(
+                  hostname, r'Host', 'hostname'),
+              iv: BuiltValueNullFieldError.checkNotNull(iv, r'Host', 'iv'),
+              password: password,
+              key: _key?.build());
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'key';
+        _key?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            r'Host', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
