@@ -24,4 +24,24 @@ class KeysService {
     );
     return req.data!;
   }
+
+  static Future<GenericResponseDto> deleteKey(
+    String id,
+  ) async {
+    final req = await _keysApi.keysControllerDelete(
+      id: id,
+    );
+    return req.data!;
+  }
+
+  static Future<GenericResponseDto> updateKey(
+    String id,
+    UpdateKeyDTO body,
+  ) async {
+    final req = await _keysApi.keysControllerUpdate(
+      id: id,
+      updateKeyDTO: body,
+    );
+    return req.data!;
+  }
 }

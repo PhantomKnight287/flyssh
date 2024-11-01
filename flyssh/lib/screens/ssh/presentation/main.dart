@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartssh2/dartssh2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,9 @@ import 'package:flyssh/constants/main.dart';
 import 'package:flyssh/models/theme.dart';
 import 'package:flyssh/screens/ssh/presentation/virtual_keyboard.dart';
 import 'package:flyssh/screens/ssh/service/main.dart';
+import 'package:flyssh/themes/terminal.dart';
 import 'package:flyssh/utils/device.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_size/window_size.dart';
 import 'package:xterm/xterm.dart';
 import 'package:gap/gap.dart';
@@ -33,7 +36,10 @@ class SshScreenState extends State<SshScreen> {
   bool isLoading = true;
   String? error;
   String? title = "FlySSH";
-  CustomTerminalTheme theme = CustomTerminalTheme.from(TerminalThemes.defaultTheme, name: "Default");
+  CustomTerminalTheme theme = CustomTerminalTheme.from(
+    TerminalThemes.defaultTheme,
+    name: "Default",
+  );
   late SSHClient client;
   @override
   void initState() {
@@ -93,6 +99,19 @@ class SshScreenState extends State<SshScreen> {
           });
         }
       };
+      final prefs = await SharedPreferences.getInstance();
+
+      if (mounted) {
+        final themeString = prefs.getString("theme");
+        final themeObject = themes.firstWhereOrNull(
+          (element) => element.value == themeString,
+        );
+        if (themeObject != null) {
+          setState(() {
+            theme = themeObject;
+          });
+        }
+      }
 
       // Handle session completion separately
       session!.done.then((_) {

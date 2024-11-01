@@ -3,84 +3,73 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:openapi/src/model/count.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-part 'partial_key.g.dart';
+part 'update_key_dto.g.dart';
 
-/// PartialKey
+/// UpdateKeyDTO
 ///
 /// Properties:
-/// * [label] 
-/// * [id] 
-/// * [count] 
-/// * [value] 
-/// * [passphrase] 
-/// * [iv] 
+/// * [label] - Label of the key
+/// * [value] - Encrypted 'private' key
+/// * [passphrase] - Passphrase
+/// * [iv] - IV used to encrypt the key
 @BuiltValue()
-abstract class PartialKey implements Built<PartialKey, PartialKeyBuilder> {
+abstract class UpdateKeyDTO implements Built<UpdateKeyDTO, UpdateKeyDTOBuilder> {
+  /// Label of the key
   @BuiltValueField(wireName: r'label')
-  String get label;
+  String? get label;
 
-  @BuiltValueField(wireName: r'id')
-  String get id;
-
-  @BuiltValueField(wireName: r'_count')
-  Count get count;
-
+  /// Encrypted 'private' key
   @BuiltValueField(wireName: r'value')
-  String get value;
+  String? get value;
 
+  /// Passphrase
   @BuiltValueField(wireName: r'passphrase')
   String? get passphrase;
 
+  /// IV used to encrypt the key
   @BuiltValueField(wireName: r'iv')
-  String get iv;
+  String? get iv;
 
-  PartialKey._();
+  UpdateKeyDTO._();
 
-  factory PartialKey([void updates(PartialKeyBuilder b)]) = _$PartialKey;
+  factory UpdateKeyDTO([void updates(UpdateKeyDTOBuilder b)]) = _$UpdateKeyDTO;
 
   @BuiltValueHook(initializeBuilder: true)
-  static void _defaults(PartialKeyBuilder b) => b;
+  static void _defaults(UpdateKeyDTOBuilder b) => b;
 
   @BuiltValueSerializer(custom: true)
-  static Serializer<PartialKey> get serializer => _$PartialKeySerializer();
+  static Serializer<UpdateKeyDTO> get serializer => _$UpdateKeyDTOSerializer();
 }
 
-class _$PartialKeySerializer implements PrimitiveSerializer<PartialKey> {
+class _$UpdateKeyDTOSerializer implements PrimitiveSerializer<UpdateKeyDTO> {
   @override
-  final Iterable<Type> types = const [PartialKey, _$PartialKey];
+  final Iterable<Type> types = const [UpdateKeyDTO, _$UpdateKeyDTO];
 
   @override
-  final String wireName = r'PartialKey';
+  final String wireName = r'UpdateKeyDTO';
 
   Iterable<Object?> _serializeProperties(
     Serializers serializers,
-    PartialKey object, {
+    UpdateKeyDTO object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
-    yield r'label';
-    yield serializers.serialize(
-      object.label,
-      specifiedType: const FullType(String),
-    );
-    yield r'id';
-    yield serializers.serialize(
-      object.id,
-      specifiedType: const FullType(String),
-    );
-    yield r'_count';
-    yield serializers.serialize(
-      object.count,
-      specifiedType: const FullType(Count),
-    );
-    yield r'value';
-    yield serializers.serialize(
-      object.value,
-      specifiedType: const FullType(String),
-    );
+    if (object.label != null) {
+      yield r'label';
+      yield serializers.serialize(
+        object.label,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.value != null) {
+      yield r'value';
+      yield serializers.serialize(
+        object.value,
+        specifiedType: const FullType(String),
+      );
+    }
     if (object.passphrase != null) {
       yield r'passphrase';
       yield serializers.serialize(
@@ -88,17 +77,19 @@ class _$PartialKeySerializer implements PrimitiveSerializer<PartialKey> {
         specifiedType: const FullType(String),
       );
     }
-    yield r'iv';
-    yield serializers.serialize(
-      object.iv,
-      specifiedType: const FullType(String),
-    );
+    if (object.iv != null) {
+      yield r'iv';
+      yield serializers.serialize(
+        object.iv,
+        specifiedType: const FullType(String),
+      );
+    }
   }
 
   @override
   Object serialize(
     Serializers serializers,
-    PartialKey object, {
+    UpdateKeyDTO object, {
     FullType specifiedType = FullType.unspecified,
   }) {
     return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
@@ -109,7 +100,7 @@ class _$PartialKeySerializer implements PrimitiveSerializer<PartialKey> {
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
     required List<Object?> serializedList,
-    required PartialKeyBuilder result,
+    required UpdateKeyDTOBuilder result,
     required List<Object?> unhandled,
   }) {
     for (var i = 0; i < serializedList.length; i += 2) {
@@ -122,20 +113,6 @@ class _$PartialKeySerializer implements PrimitiveSerializer<PartialKey> {
             specifiedType: const FullType(String),
           ) as String;
           result.label = valueDes;
-          break;
-        case r'id':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(String),
-          ) as String;
-          result.id = valueDes;
-          break;
-        case r'_count':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType(Count),
-          ) as Count;
-          result.count.replace(valueDes);
           break;
         case r'value':
           final valueDes = serializers.deserialize(
@@ -167,12 +144,12 @@ class _$PartialKeySerializer implements PrimitiveSerializer<PartialKey> {
   }
 
   @override
-  PartialKey deserialize(
+  UpdateKeyDTO deserialize(
     Serializers serializers,
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    final result = PartialKeyBuilder();
+    final result = UpdateKeyDTOBuilder();
     final serializedList = (serialized as Iterable<Object?>).toList();
     final unhandled = <Object?>[];
     _deserializeProperties(

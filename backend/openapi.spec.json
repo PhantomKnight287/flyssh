@@ -477,6 +477,123 @@
           }
         ]
       }
+    },
+    "/keys/{id}": {
+      "get": {
+        "operationId": "KeysController_findOne",
+        "summary": "Get a key",
+        "description": "Get a key",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyEntity"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Keys"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "KeysController_delete",
+        "summary": "Delete a key",
+        "description": "Delete a key",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Keys"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "KeysController_update",
+        "summary": "Update a key",
+        "description": "Update a key",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateKeyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Keys"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -693,6 +810,10 @@
           },
           "iv": {
             "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -851,13 +972,45 @@
           },
           "_count": {
             "$ref": "#/components/schemas/Count"
+          },
+          "value": {
+            "type": "string"
+          },
+          "passphrase": {
+            "type": "string"
+          },
+          "iv": {
+            "type": "string"
           }
         },
         "required": [
           "label",
           "id",
-          "_count"
+          "_count",
+          "value",
+          "iv"
         ]
+      },
+      "UpdateKeyDTO": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Label of the key"
+          },
+          "value": {
+            "type": "string",
+            "description": "Encrypted 'private' key"
+          },
+          "passphrase": {
+            "type": "string",
+            "description": "Passphrase"
+          },
+          "iv": {
+            "type": "string",
+            "description": "IV used to encrypt the key"
+          }
+        }
       }
     }
   }

@@ -2,8 +2,8 @@ import 'package:xterm/xterm.dart';
 
 class CustomTerminalTheme extends TerminalTheme {
   final String name;
-
-  const CustomTerminalTheme({
+  final String value;
+  CustomTerminalTheme({
     required super.cursor,
     required super.selection,
     required super.foreground,
@@ -28,7 +28,7 @@ class CustomTerminalTheme extends TerminalTheme {
     required super.searchHitBackgroundCurrent,
     required super.searchHitForeground,
     required this.name,
-  });
+  }) : value = name.replaceAll(" ", "-").toLowerCase();
   factory CustomTerminalTheme.from(TerminalTheme other, {String name = 'default'}) {
     return CustomTerminalTheme(
       cursor: other.cursor,

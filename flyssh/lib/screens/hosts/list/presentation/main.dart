@@ -8,11 +8,14 @@ import 'package:flyssh/screens/hosts/service/main.dart';
 import 'package:flyssh/screens/keys/create/presentation/main.dart';
 import 'package:flyssh/screens/keys/list/main.dart';
 import 'package:flyssh/screens/ssh/presentation/main.dart';
+import 'package:flyssh/themes/terminal.dart';
 import 'package:flyssh/utils/device.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flyssh/utils/error.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:openapi/openapi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class HostsScreen extends StatefulWidget {
   const HostsScreen({super.key});
@@ -29,12 +32,19 @@ class _HostsScreenState extends State<HostsScreen> {
     firstPageKey: 1,
   );
   int _currentActiveItem = 0;
+  late SharedPreferences prefs;
+
   @override
   void initState() {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    _setSharedPrefs();
     super.initState();
+  }
+
+  Future<void> _setSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -61,6 +71,70 @@ class _HostsScreenState extends State<HostsScreen> {
     }
   }
 
+  void _showSettingsModal(context) {
+    WoltModalSheet.show(
+      context: context,
+      pageListBuilder: (context) {
+        return [
+          WoltModalSheetPage(
+            topBarTitle: Text(
+              "Settings",
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Colors.black,
+                  ),
+            ),
+            isTopBarLayerAlwaysVisible: true,
+            trailingNavBarWidget: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: Navigator.of(context).pop,
+            ),
+            child: StatefulBuilder(builder: (context, setState) {
+              return Padding(
+                padding: EdgeInsets.all(
+                  16,
+                ),
+                child: ListTile(
+                    title: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: BASE_SPACE * 1,
+                      ),
+                      child: Text(
+                        "Theme",
+                        style: TextStyle(
+                          fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    trailing: DropdownButton(
+                      value: prefs.getString(
+                            "theme",
+                          ) ??
+                          "default",
+                      items: themes
+                          .map((e) => DropdownMenuItem(
+                                value: e.value,
+                                child: Text(e.name),
+                              ))
+                          .toList(),
+                      onChanged: (value) async {
+                        if (value == null) return;
+
+                        prefs.setString(
+                          "theme",
+                          value,
+                        );
+                        setState(() {});
+                      },
+                    )),
+              );
+            }),
+          )
+        ];
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +147,14 @@ class _HostsScreenState extends State<HostsScreen> {
               bottom: Bottom(
                 context,
               ),
+              actions: [
+                IconButton(
+                  onPressed: () => _showSettingsModal(context),
+                  icon: const Icon(
+                    Icons.settings_rounded,
+                  ),
+                )
+              ],
             )
           : null,
       body: Padding(
@@ -89,6 +171,26 @@ class _HostsScreenState extends State<HostsScreen> {
                     _currentActiveItem = value;
                   });
                 },
+                trailing: Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 8.0,
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.settings_rounded,
+                            ),
+                            onPressed: () => _showSettingsModal(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 destinations: [
                   NavigationRailDestination(
                     icon: const Icon(
@@ -317,7 +419,6 @@ class _HostItemState extends State<HostItem> {
         label: 'Edit',
         icon: Icons.edit,
         onSelected: () {
-          print("ok");
           if (isPhone()) Navigator.pop(context);
           Navigator.of(context).push(
             CustomCupertinoRoute(
@@ -392,11 +493,15 @@ class _HostItemState extends State<HostItem> {
                   if (isPhone()) {
                     Navigator.of(context).pop(); // close the sheet as well
                   }
-                  await HostsService.deleteHost(widget.host.id);
-                  showSuccessToast(
-                    title: "Host deleted successfully",
-                  );
-                  widget.pagingController.refresh();
+                  try {
+                    await HostsService.deleteHost(widget.host.id);
+                    showSuccessToast(
+                      title: "Host deleted successfully",
+                    );
+                    widget.pagingController.refresh();
+                  } catch (e) {
+                    showErrorToast(e);
+                  }
                 }
               },
               child: const Text(
@@ -440,7 +545,22 @@ class _HostItemState extends State<HostItem> {
                             leading: const Icon(
                               Icons.edit,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              if (isPhone()) Navigator.pop(context);
+                              Navigator.of(context).push(
+                                CustomCupertinoRoute(
+                                  builder: (context) {
+                                    return CreateHostsScreen(
+                                      host: widget.host,
+                                    );
+                                  },
+                                ),
+                              ).then(
+                                (value) {
+                                  widget.pagingController.refresh();
+                                },
+                              );
+                            },
                           ),
                           ListTile(
                             title: const Text("Delete"),

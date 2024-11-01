@@ -14,9 +14,7 @@ export class PartialKey {
 
   @ApiProperty({ type: Count })
   _count: Count;
-}
 
-export class KeyEntity extends OmitType(PartialKey, ['_count']) {
   @ApiProperty({ type: String })
   value: string;
 
@@ -26,3 +24,5 @@ export class KeyEntity extends OmitType(PartialKey, ['_count']) {
   @ApiProperty({ type: String })
   iv: string;
 }
+
+export class KeyEntity extends OmitType(PartialKey, ['_count']) {}

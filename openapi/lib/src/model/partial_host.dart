@@ -19,6 +19,7 @@ part 'partial_host.g.dart';
 /// * [hostname] 
 /// * [key] 
 /// * [iv] 
+/// * [password] 
 @BuiltValue()
 abstract class PartialHost implements Built<PartialHost, PartialHostBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -41,6 +42,9 @@ abstract class PartialHost implements Built<PartialHost, PartialHostBuilder> {
 
   @BuiltValueField(wireName: r'iv')
   String get iv;
+
+  @BuiltValueField(wireName: r'password')
+  String? get password;
 
   PartialHost._();
 
@@ -102,6 +106,13 @@ class _$PartialHostSerializer implements PrimitiveSerializer<PartialHost> {
       object.iv,
       specifiedType: const FullType(String),
     );
+    if (object.password != null) {
+      yield r'password';
+      yield serializers.serialize(
+        object.password,
+        specifiedType: const FullType.nullable(String),
+      );
+    }
   }
 
   @override
@@ -173,6 +184,14 @@ class _$PartialHostSerializer implements PrimitiveSerializer<PartialHost> {
             specifiedType: const FullType(String),
           ) as String;
           result.iv = valueDes;
+          break;
+        case r'password':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.password = valueDes;
           break;
         default:
           unhandled.add(key);

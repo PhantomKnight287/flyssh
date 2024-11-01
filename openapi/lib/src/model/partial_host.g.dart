@@ -21,6 +21,8 @@ class _$PartialHost extends PartialHost {
   final PartialKeyWithoutCount? key;
   @override
   final String iv;
+  @override
+  final String? password;
 
   factory _$PartialHost([void Function(PartialHostBuilder)? updates]) =>
       (new PartialHostBuilder()..update(updates))._build();
@@ -32,7 +34,8 @@ class _$PartialHost extends PartialHost {
       required this.port,
       required this.hostname,
       this.key,
-      required this.iv})
+      required this.iv,
+      this.password})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, r'PartialHost', 'id');
     BuiltValueNullFieldError.checkNotNull(label, r'PartialHost', 'label');
@@ -59,7 +62,8 @@ class _$PartialHost extends PartialHost {
         port == other.port &&
         hostname == other.hostname &&
         key == other.key &&
-        iv == other.iv;
+        iv == other.iv &&
+        password == other.password;
   }
 
   @override
@@ -72,6 +76,7 @@ class _$PartialHost extends PartialHost {
     _$hash = $jc(_$hash, hostname.hashCode);
     _$hash = $jc(_$hash, key.hashCode);
     _$hash = $jc(_$hash, iv.hashCode);
+    _$hash = $jc(_$hash, password.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -85,7 +90,8 @@ class _$PartialHost extends PartialHost {
           ..add('port', port)
           ..add('hostname', hostname)
           ..add('key', key)
-          ..add('iv', iv))
+          ..add('iv', iv)
+          ..add('password', password))
         .toString();
   }
 }
@@ -122,6 +128,10 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
   String? get iv => _$this._iv;
   set iv(String? iv) => _$this._iv = iv;
 
+  String? _password;
+  String? get password => _$this._password;
+  set password(String? password) => _$this._password = password;
+
   PartialHostBuilder() {
     PartialHost._defaults(this);
   }
@@ -136,6 +146,7 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
       _hostname = $v.hostname;
       _key = $v.key?.toBuilder();
       _iv = $v.iv;
+      _password = $v.password;
       _$v = null;
     }
     return this;
@@ -172,7 +183,8 @@ class PartialHostBuilder implements Builder<PartialHost, PartialHostBuilder> {
                   hostname, r'PartialHost', 'hostname'),
               key: _key?.build(),
               iv: BuiltValueNullFieldError.checkNotNull(
-                  iv, r'PartialHost', 'iv'));
+                  iv, r'PartialHost', 'iv'),
+              password: password);
     } catch (_) {
       late String _$failedField;
       try {

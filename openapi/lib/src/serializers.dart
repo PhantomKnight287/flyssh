@@ -29,6 +29,7 @@ import 'package:openapi/src/model/partial_key_without_count.dart';
 import 'package:openapi/src/model/signup_dto.dart';
 import 'package:openapi/src/model/signup_entity.dart';
 import 'package:openapi/src/model/update_host_dto.dart';
+import 'package:openapi/src/model/update_key_dto.dart';
 import 'package:openapi/src/model/user_entity.dart';
 
 part 'serializers.g.dart';
@@ -49,6 +50,7 @@ part 'serializers.g.dart';
   SignupDTO,
   SignupEntity,
   UpdateHostDto,
+  UpdateKeyDTO,
   UserEntity,
 ])
 Serializers serializers = (_$serializers.toBuilder()

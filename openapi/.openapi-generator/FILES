@@ -20,6 +20,7 @@ doc/PartialKeyWithoutCount.md
 doc/SignupDTO.md
 doc/SignupEntity.md
 doc/UpdateHostDto.md
+doc/UpdateKeyDTO.md
 doc/UserEntity.md
 lib/openapi.dart
 lib/src/api.dart
@@ -50,6 +51,8 @@ lib/src/model/partial_key_without_count.dart
 lib/src/model/signup_dto.dart
 lib/src/model/signup_entity.dart
 lib/src/model/update_host_dto.dart
+lib/src/model/update_key_dto.dart
 lib/src/model/user_entity.dart
 lib/src/serializers.dart
 pubspec.yaml
+test/update_key_dto_test.dart

@@ -30,5 +30,6 @@ export 'package:openapi/src/model/partial_key_without_count.dart';
 export 'package:openapi/src/model/signup_dto.dart';
 export 'package:openapi/src/model/signup_entity.dart';
 export 'package:openapi/src/model/update_host_dto.dart';
+export 'package:openapi/src/model/update_key_dto.dart';
 export 'package:openapi/src/model/user_entity.dart';
 

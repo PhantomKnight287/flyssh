@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **hostname** | **String** |  | 
 **key** | [**PartialKeyWithoutCount**](PartialKeyWithoutCount.md) |  | [optional] 
 **iv** | **String** |  | 
+**password** | **String** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

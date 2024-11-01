@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -19,7 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GenericResponseDto } from '../dto/generic-response.dto';
-import { PartialKey } from './entities/key.entity';
+import { KeyEntity, PartialKey } from './entities/key.entity';
+import { UpdateKeyDTO } from './dto/update-key.dto';
 
 @Controller('keys')
 @ApiTags('Keys')
@@ -66,5 +70,45 @@ export class KeysController {
     @Auth() auth: User,
   ) {
     return this.keysService.findAll({ page, limit, userId: auth.id });
+  }
+
+  @ApiOperation({
+    summary: 'Get a key',
+    description: 'Get a key',
+  })
+  @ApiOkResponse({
+    type: KeyEntity,
+  })
+  @Get(':id')
+  findOne(@Param('id') id: string, @Auth() auth: User) {
+    return this.keysService.findOne(id, auth.id);
+  }
+
+  @ApiOperation({
+    summary: 'Delete a key',
+    description: 'Delete a key',
+  })
+  @ApiOkResponse({
+    type: GenericResponseDto,
+  })
+  @Delete(':id')
+  delete(@Param('id') id: string, @Auth() auth: User) {
+    return this.keysService.delete(id, auth.id);
+  }
+
+  @ApiOperation({
+    summary: 'Update a key',
+    description: 'Update a key',
+  })
+  @ApiOkResponse({
+    type: GenericResponseDto,
+  })
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateKeyDto: UpdateKeyDTO,
+    @Auth() auth: User,
+  ) {
+    return this.keysService.update(id, updateKeyDto, auth.id);
   }
 }

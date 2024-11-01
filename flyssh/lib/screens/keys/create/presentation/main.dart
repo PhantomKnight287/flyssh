@@ -16,7 +16,11 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:openapi/openapi.dart';
 
 class CreateKeyScreen extends StatefulWidget {
-  const CreateKeyScreen({super.key});
+  const CreateKeyScreen({
+    super.key,
+    this.sshKey,
+  });
+  final PartialKey? sshKey;
 
   @override
   State<CreateKeyScreen> createState() => _CreateKeyScreenState();
@@ -44,33 +48,58 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
           ),
         ),
       );
-      final iv = encrypt.IV.fromLength(16);
-      final req = await KeysService.createKey(
-        CreateKeyDTO(
+      final iv = widget.sshKey != null ? encrypt.IV.fromBase64(widget.sshKey!.iv) : encrypt.IV.fromLength(16);
+      GenericResponseDto req;
+      if (widget.sshKey != null) {
+        req = await KeysService.updateKey(widget.sshKey!.id, UpdateKeyDTO(
           (b) {
             b
-              ..label = _labelController.text.trim().isNotEmpty
+              ..label = _labelController.text.trim().isNotEmpty ? _labelController.text.trim() : 'Key'
+              ..passphrase = _passphraseController.text.trim().isNotEmpty
                   ? encrypter
                       .encrypt(
-                        _labelController.text.trim(),
+                        _passphraseController.text.trim(),
                         iv: iv,
                       )
                       .base64
-                  : 'Key'
-              ..passphrase = _passphraseController.text.trim().isNotEmpty ? _passphraseController.text.trim() : null
+                  : null
               ..value = encrypter
                   .encrypt(
                     _keyController.text.trim(),
                     iv: iv,
                   )
                   .base64
-              ..iv = iv.base64
               ..build();
           },
-        ),
-      );
+        ));
+      } else {
+        req = await KeysService.createKey(
+          CreateKeyDTO(
+            (b) {
+              b
+                ..label = _labelController.text.trim()
+                ..passphrase = _passphraseController.text.trim().isNotEmpty
+                    ? encrypter
+                        .encrypt(
+                          _passphraseController.text.trim(),
+                          iv: iv,
+                        )
+                        .base64
+                    : null
+                ..value = encrypter
+                    .encrypt(
+                      _keyController.text.trim(),
+                      iv: iv,
+                    )
+                    .base64
+                ..iv = iv.base64
+                ..build();
+            },
+          ),
+        );
+      }
       showSuccessToast(
-        title: "Key Added",
+        title: "Key ${widget.sshKey != null ? "Updated" : "Created"}",
       );
       if (mounted) {
         Navigator.pop(
@@ -90,6 +119,40 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
     }
   }
 
+  Future<void> _prefillFields() async {
+    _labelController.text = widget.sshKey!.label;
+    const storage = FlutterSecureStorage();
+    final encrypter = encrypt.Encrypter(encrypt.AES(
+      encrypt.Key.fromBase64(
+        (await storage.read(
+          key: MASTER_KEY_KEY,
+        ))!,
+      ),
+    ));
+    final iv = encrypt.IV.fromBase64(
+      widget.sshKey!.iv,
+    );
+
+    _keyController.text = encrypter.decrypt64(
+      widget.sshKey!.value,
+      iv: iv,
+    );
+    if (widget.sshKey!.passphrase != null) {
+      _passphraseController.text = encrypter.decrypt64(
+        widget.sshKey!.passphrase!,
+        iv: iv,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.sshKey != null) {
+      _prefillFields();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
@@ -97,8 +160,8 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
     return Scaffold(
       appBar: _isPhone
           ? AppBar(
-              title: const Text(
-                "Add new key",
+              title: Text(
+                "${widget.sshKey != null ? "Update" : "Create new"} key",
               ),
               centerTitle: false,
               bottom: Bottom(context),
@@ -153,7 +216,7 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
                                       BASE_SPACE * 2,
                                     ),
                                     Text(
-                                      "Add new key",
+                                      "${widget.sshKey != null ? "Update" : "Create new"} key",
                                       style: Theme.of(context).textTheme.titleLarge,
                                     ),
                                   ],
@@ -196,9 +259,18 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           IconButton(
                             tooltip: "Upload private key",
+                            style: const ButtonStyle(
+                              minimumSize: WidgetStatePropertyAll(
+                                Size(
+                                  0,
+                                  0,
+                                ),
+                              ), // Removes the minimum size constraint
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
                             onPressed: () async {
                               final file = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
@@ -214,7 +286,7 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
                                 },
                               );
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.upload_file,
                             ),
                           )
@@ -275,8 +347,8 @@ class _CreateKeyScreenState extends State<CreateKeyScreen> {
                             ? const CupertinoActivityIndicator(
                                 color: Colors.white,
                               )
-                            : const Text(
-                                "Add",
+                            : Text(
+                                widget.sshKey != null ? "Update" : "Add",
                               ),
                       ),
                     ],

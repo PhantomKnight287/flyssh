@@ -22,6 +22,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(SignupDTO.serializer)
       ..add(SignupEntity.serializer)
       ..add(UpdateHostDto.serializer)
+      ..add(UpdateKeyDTO.serializer)
       ..add(UserEntity.serializer))
     .build();
 

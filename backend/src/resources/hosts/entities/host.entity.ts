@@ -3,7 +3,12 @@ import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { KeyEntity, PartialKey } from 'src/resources/keys/entities/key.entity';
 
-class PartialKeyWithoutCount extends OmitType(PartialKey, ['_count']) {}
+class PartialKeyWithoutCount extends OmitType(PartialKey, [
+  '_count',
+  'iv',
+  'value',
+  'passphrase',
+]) {}
 export class PartialHost {
   @ApiProperty()
   @IsString()
@@ -32,14 +37,14 @@ export class PartialHost {
   @ApiProperty()
   @IsString()
   iv: string;
-}
 
-export class Host extends OmitType(PartialHost, ['key']) {
   @ApiProperty({ nullable: true, required: false })
   @IsString()
   @IsOptional()
   password?: string;
+}
 
+export class Host extends OmitType(PartialHost, ['key']) {
   @ApiPropertyOptional({ type: KeyEntity })
   key: KeyEntity;
 }

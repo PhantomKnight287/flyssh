@@ -94,7 +94,7 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
           ),
         );
       } else {
-        final req = await HostsService.createHost(
+        await HostsService.createHost(
           CreateHostDto(
             (b) {
               b
@@ -139,23 +139,46 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
     _passwordController.dispose();
   }
 
+  Future<void> _prefillFields() async {
+    _labelController.text = widget.host!.label;
+    _hostnameController.text = widget.host!.hostname;
+    _usernameController.text = widget.host!.username;
+    _portController.text = widget.host!.port.toString();
+    if (widget.host!.key != null) {
+      _keyController.text = "Using Key: ${widget.host!.key!.label}";
+      setState(() {
+        _selectedKey = KeyResponse(
+          id: widget.host!.key!.id,
+          label: widget.host!.key!.label,
+        );
+      });
+    }
+    if (widget.host!.password != null) {
+      const storage = FlutterSecureStorage();
+      final encrypter = encrypt.Encrypter(
+        encrypt.AES(
+          encrypt.Key.fromBase64((await storage.read(
+            key: MASTER_KEY_KEY,
+          ))!),
+        ),
+      );
+
+      _passwordController.text = encrypter
+          .decrypt64(
+            widget.host!.password!,
+            iv: encrypt.IV.fromBase64(
+              widget.host!.iv,
+            ),
+          )
+          .toString();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.host != null) {
-      _labelController.text = widget.host!.label;
-      _hostnameController.text = widget.host!.hostname;
-      _usernameController.text = widget.host!.username;
-      _portController.text = widget.host!.port.toString();
-      if (widget.host!.key != null) {
-        _keyController.text = "Using Key: ${widget.host!.key!.label}";
-        setState(() {
-          _selectedKey = KeyResponse(
-            id: widget.host!.key!.id,
-            label: widget.host!.key!.label,
-          );
-        });
-      }
+      _prefillFields();
     }
   }
 
@@ -349,16 +372,6 @@ class _CreateHostsScreenState extends State<CreateHostsScreen> {
                               controller: _keyController,
                               obscureText: false,
                               enabled: _selectedKey == null,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _passwordShown ? Icons.visibility_off : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _passwordShown = !_passwordShown;
-                                  });
-                                },
-                              ),
                             ),
                             const Gap(
                               BASE_SPACE * 4,

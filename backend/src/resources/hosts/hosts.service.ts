@@ -61,6 +61,7 @@ export class HostsService {
         username: true,
         port: true,
         hostname: true,
+        password: true,
         iv: true,
         key: {
           select: {

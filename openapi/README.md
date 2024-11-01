@@ -74,7 +74,10 @@ Class | Method | HTTP request | Description
 [*HostsApi*](doc/HostsApi.md) | [**hostsControllerRemove**](doc/HostsApi.md#hostscontrollerremove) | **DELETE** /hosts/{id} | Delete host
 [*HostsApi*](doc/HostsApi.md) | [**hostsControllerUpdate**](doc/HostsApi.md#hostscontrollerupdate) | **PATCH** /hosts/{id} | Update host
 [*KeysApi*](doc/KeysApi.md) | [**keysControllerCreate**](doc/KeysApi.md#keyscontrollercreate) | **POST** /keys | Create a key
+[*KeysApi*](doc/KeysApi.md) | [**keysControllerDelete**](doc/KeysApi.md#keyscontrollerdelete) | **DELETE** /keys/{id} | Delete a key
 [*KeysApi*](doc/KeysApi.md) | [**keysControllerFindAll**](doc/KeysApi.md#keyscontrollerfindall) | **GET** /keys | Get all keys
+[*KeysApi*](doc/KeysApi.md) | [**keysControllerFindOne**](doc/KeysApi.md#keyscontrollerfindone) | **GET** /keys/{id} | Get a key
+[*KeysApi*](doc/KeysApi.md) | [**keysControllerUpdate**](doc/KeysApi.md#keyscontrollerupdate) | **PATCH** /keys/{id} | Update a key
 
 
 ## Documentation For Models
@@ -94,6 +97,7 @@ Class | Method | HTTP request | Description
  - [SignupDTO](doc/SignupDTO.md)
  - [SignupEntity](doc/SignupEntity.md)
  - [UpdateHostDto](doc/UpdateHostDto.md)
+ - [UpdateKeyDTO](doc/UpdateKeyDTO.md)
  - [UserEntity](doc/UserEntity.md)
 
 
