@@ -8,7 +8,7 @@
 PRODUCT_NAME = flyssh
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.phantomknight287.flyssh.flyssh
+PRODUCT_BUNDLE_IDENTIFIER = fyi.procrastinator.flyssh
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.phantomknight287.flyssh. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 fyi.procrastinator. All rights reserved.

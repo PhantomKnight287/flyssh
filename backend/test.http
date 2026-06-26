@@ -1,35 +1,136 @@
-@url = http://localhost:3000
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfdm9pNGZuM2FoNGhmcDJ3MmU0OXhqZ2pzIiwiaWF0IjoxNzI2OTA3MTAwfQ.nxTtg32HKw-Nh6xlSbr5ygFXfS2JcHJreFWCg4HWbx4
-@masterkey=3ddf5dc49e1c6fcc4c79f7c0ec8004c054c4c6480ccbaf3e655132e683f452bd
-@userId=user_voi4fn3ah4hfp2w2e49xjgjs
-
-
-###
-POST {{url}}/auth/login
+### Register a new user
+POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
-    "username":"phantomknight287",
-    "password":"password",
-    "masterkey": "{{masterkey}}"
+  "name": "John Doe",
+  "username": "john@example.com",
+  "password": "password123",
+  "masterKeyHash": "client-derived-auth-key-base64"
 }
 
-
-###
-POST {{url}}/auth/sign-up
+### Login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-    "username":"phantomknight287",
-    "password":"password",
-    "name":"Gurpal Singh"
+  "username": "john@example.com",
+  "password": "password123",
+  "masterKeyHash": "client-derived-auth-key-base64"
 }
 
-###
-GET {{url}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfZHpveno4M3Uyb3pvZGhpaHF3bzVuazduIiwiaWF0IjoxNzE1MjM5MzYwfQ.mbrb71K8ltLK3nZKh6ZuF2wIHwmriw8vkE1sBee_0xM
+### Create a key
+POST http://localhost:8080/keys
+Content-Type: application/json
+Authorization: Bearer <token>
 
-###
-GET {{url}}
-Authorization: Bearer incorrect_token
+{
+  "label": "My SSH Key",
+  "value": "encrypted-key-blob-base64",
+  "passphrase": "encrypted-passphrase-blob-base64",
+  "iv": "random-iv-base64"
+}
 
+### List keys
+GET http://localhost:8080/keys
+Authorization: Bearer <token>
+
+### Get a key
+GET http://localhost:8080/keys/1
+Authorization: Bearer <token>
+
+### Update a key
+PUT http://localhost:8080/keys/1
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "label": "Renamed SSH Key"
+}
+
+### Delete a key
+DELETE http://localhost:8080/keys/1
+Authorization: Bearer <token>
+
+### Create a host (with password)
+POST http://localhost:8080/hosts
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "label": "My Server",
+  "hostname": "192.168.1.100",
+  "username": "root",
+  "port": 22,
+  "password": "encrypted-password-blob-base64",
+  "iv": "random-iv-base64"
+}
+
+### Create a host (with key)
+POST http://localhost:8080/hosts
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "label": "My Server with Key",
+  "hostname": "192.168.1.101",
+  "username": "deploy",
+  "keyId": 1,
+  "iv": "random-iv-base64"
+}
+
+### Create a host (with both password and key)
+POST http://localhost:8080/hosts
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "label": "My Server Both",
+  "hostname": "192.168.1.102",
+  "username": "admin",
+  "port": 2222,
+  "password": "encrypted-password-blob-base64",
+  "keyId": 1,
+  "iv": "random-iv-base64"
+}
+
+### List hosts
+GET http://localhost:8080/hosts
+Authorization: Bearer <token>
+
+### Get a host
+GET http://localhost:8080/hosts/1
+Authorization: Bearer <token>
+
+### Update a host
+PUT http://localhost:8080/hosts/1
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "label": "Renamed Server",
+  "port": 2222
+}
+
+### Delete a host
+DELETE http://localhost:8080/hosts/1
+Authorization: Bearer <token>
+
+### Setup recovery (store encrypted master key)
+POST http://localhost:8080/auth/recovery/setup
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "encryptedMasterKey": "client-encrypted-master-key-blob-base64"
+}
+
+### Recover encrypted master key
+POST http://localhost:8080/auth/recover
+Content-Type: application/json
+
+{
+  "username": "john@example.com",
+  "password": "password123",
+  "recoveryKey": "recovery-key-from-registration"
+}

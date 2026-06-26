@@ -1,50 +1,22 @@
 import 'package:dio/dio.dart';
-import 'package:toastification/toastification.dart';
-import 'package:flutter/material.dart';
 
-getErrorMessage(dynamic error, [String? message]) {
-  if (error is String) {
-    return error;
-  } else if (error is Map) {
-    if (error['message'] is List) {
-      return error['message'][0];
-    } else {
-      return error['message'];
+class ApiResponse {
+  static String toHumanMessage(DioException e) {
+    try {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic>) {
+        if (e.response?.statusCode == 400) {
+          final errors = data['errors'] as Map<String, dynamic>?;
+          if (errors != null && errors.isNotEmpty) {
+            return errors.values.first?.toString() ?? data['message']?.toString() ?? 'Bad Request';
+          }
+          return data['message']?.toString() ?? 'Bad Request';
+        }
+        return data['message']?.toString() ?? 'An unknown error occurred';
+      }
+      return e.message ?? 'An unknown error occurred';
+    } catch (_) {
+      return e.message ?? 'An unknown error occurred';
     }
-  } else {
-    return message ?? 'Something went wrong';
   }
-}
-
-ToastificationItem showErrorToast(dynamic error) {
-  final message = error is DioException ? getErrorMessage(error.response?.data) : 'An unexpected error occurred';
-  return toastification.show(
-    title: const Text(
-      "An error occurred",
-    ),
-    description: Text(message),
-    type: ToastificationType.error,
-    style: ToastificationStyle.minimal,
-    autoCloseDuration: const Duration(
-      seconds: 3,
-    ),
-    showProgressBar: false,
-  );
-}
-
-ToastificationItem showSuccessToast({String? title, String? description}) {
-  return toastification.show(
-    title: title != null
-        ? Text(
-            title,
-          )
-        : null,
-    description: description != null ? Text(description) : null,
-    type: ToastificationType.success,
-    style: ToastificationStyle.minimal,
-    autoCloseDuration: const Duration(
-      seconds: 3,
-    ),
-    showProgressBar: false,
-  );
 }

@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.phantomknight287.flyssh" "\0"
+            VALUE "CompanyName", "fyi.procrastinator" "\0"
             VALUE "FileDescription", "flyssh" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "flyssh" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.phantomknight287.flyssh. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 fyi.procrastinator. All rights reserved." "\0"
             VALUE "OriginalFilename", "flyssh.exe" "\0"
             VALUE "ProductName", "flyssh" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

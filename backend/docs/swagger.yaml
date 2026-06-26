@@ -1,0 +1,699 @@
+definitions:
+  auth.LoginUserRequest:
+    properties:
+      masterKeyHash:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - masterKeyHash
+    - password
+    - username
+    type: object
+  auth.LoginUserResponse:
+    properties:
+      expiresAt:
+        type: integer
+      name:
+        type: string
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.RecoverRequest:
+    properties:
+      password:
+        type: string
+      recoveryKey:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - recoveryKey
+    - username
+    type: object
+  auth.RecoverResponse:
+    properties:
+      encryptedMasterKey:
+        type: string
+    type: object
+  auth.RegisterUserRequest:
+    properties:
+      masterKeyHash:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - masterKeyHash
+    - name
+    - password
+    - username
+    type: object
+  auth.RegisterUserResponse:
+    properties:
+      expiresAt:
+        type: integer
+      name:
+        type: string
+      recoveryKey:
+        type: string
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.SetupRecoveryRequest:
+    properties:
+      encryptedMasterKey:
+        type: string
+    required:
+    - encryptedMasterKey
+    type: object
+  hosts.CreateHostRequest:
+    properties:
+      hostname:
+        type: string
+      iv:
+        type: string
+      keyId:
+        type: integer
+      label:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+      username:
+        type: string
+    required:
+    - hostname
+    - iv
+    - label
+    - username
+    type: object
+  hosts.HostResponse:
+    properties:
+      createdAt:
+        type: string
+      hostname:
+        type: string
+      id:
+        type: integer
+      iv:
+        type: string
+      key:
+        $ref: '#/definitions/keys.KeyResponse'
+      keyId:
+        type: integer
+      label:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  hosts.UpdateHostRequest:
+    properties:
+      hostname:
+        type: string
+      iv:
+        type: string
+      keyId:
+        type: integer
+      label:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+      username:
+        type: string
+    type: object
+  keys.CreateKeyRequest:
+    properties:
+      iv:
+        type: string
+      label:
+        type: string
+      passphrase:
+        type: string
+      value:
+        type: string
+    required:
+    - iv
+    - label
+    - value
+    type: object
+  keys.KeyResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      iv:
+        type: string
+      label:
+        type: string
+      passphrase:
+        type: string
+      updatedAt:
+        type: string
+      value:
+        type: string
+    type: object
+  keys.UpdateKeyRequest:
+    properties:
+      iv:
+        type: string
+      label:
+        type: string
+      passphrase:
+        type: string
+      value:
+        type: string
+    type: object
+  models.Error:
+    properties:
+      errors:
+        additionalProperties:
+          type: string
+        type: object
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  models.GenericResponse:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API server for FlySsh
+  title: FlySsh API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user with username, password and masterKeyHash.
+        The client derives authKey = PBKDF2(masterKey, email) and sends it as masterKeyHash.
+        The server verifies it against the stored bcrypt hash.
+      parameters:
+      - description: Login details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.LoginUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Login a user
+      tags:
+      - auth
+  /auth/recover:
+    post:
+      consumes:
+      - application/json
+      description: Verify username, password, and recovery key, then return the encrypted
+        master key blob. The client decrypts it locally. No JWT is issued — call /auth/login
+        afterward.
+      parameters:
+      - description: Recovery credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RecoverRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.RecoverResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Recover encrypted master key
+      tags:
+      - auth
+  /auth/recovery/setup:
+    post:
+      consumes:
+      - application/json
+      description: After registration, the client encrypts the raw master key using
+        the recovery key (AES-GCM, client-side) and sends the encrypted blob to the
+        server for storage.
+      parameters:
+      - description: Encrypted master key blob
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SetupRecoveryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GenericResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      security:
+      - BearerAuth: []
+      summary: Store encrypted master key for recovery
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account. The client must generate a master key
+        locally, derive an authKey via PBKDF2(masterKey, email), and send the authKey
+        as masterKeyHash. The server never sees the raw master key.
+      parameters:
+      - description: Registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/auth.RegisterUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Register a new user
+      tags:
+      - auth
+  /hosts:
+    get:
+      description: Return all SSH hosts belonging to the authenticated user, with
+        keys preloaded.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/hosts.HostResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: List all hosts
+      tags:
+      - hosts
+    post:
+      consumes:
+      - application/json
+      description: Store an SSH host configuration. Password is a client-encrypted
+        blob. A key can optionally be attached.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Host details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/hosts.CreateHostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/hosts.HostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Create a new host
+      tags:
+      - hosts
+  /hosts/{id}:
+    delete:
+      description: Delete an SSH host by ID. Must belong to the authenticated user.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Host ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Delete a host
+      tags:
+      - hosts
+    get:
+      description: Return an SSH host by ID with its key preloaded. Must belong to
+        the authenticated user.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Host ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/hosts.HostResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Get a single host
+      tags:
+      - hosts
+    put:
+      consumes:
+      - application/json
+      description: Update fields of an existing SSH host. All fields are optional.
+        If keyId is provided, the key must belong to the same user.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Host ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/hosts.UpdateHostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/hosts.HostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Update a host
+      tags:
+      - hosts
+  /keys:
+    get:
+      description: Return all SSH keys belonging to the authenticated user.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/keys.KeyResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: List all SSH keys
+      tags:
+      - keys
+    post:
+      consumes:
+      - application/json
+      description: Store a client-encrypted SSH key. The value and optional passphrase
+        are opaque encrypted blobs.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Key details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/keys.CreateKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/keys.KeyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Create a new SSH key
+      tags:
+      - keys
+  /keys/{id}:
+    delete:
+      description: Delete an SSH key by ID. Associated hosts will have their keyId
+        set to null.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Delete an SSH key
+      tags:
+      - keys
+    get:
+      description: Return an SSH key by ID. Must belong to the authenticated user.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/keys.KeyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Get a single SSH key
+      tags:
+      - keys
+    put:
+      consumes:
+      - application/json
+      description: Update fields of an existing SSH key. All fields are optional.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Key ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Fields to update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/keys.UpdateKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/keys.KeyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Update an SSH key
+      tags:
+      - keys
+swagger: "2.0"

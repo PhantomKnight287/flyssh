@@ -1,0 +1,35 @@
+@url = http://localhost:3000
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfdm9pNGZuM2FoNGhmcDJ3MmU0OXhqZ2pzIiwiaWF0IjoxNzI2OTA3MTAwfQ.nxTtg32HKw-Nh6xlSbr5ygFXfS2JcHJreFWCg4HWbx4
+@masterkey=3ddf5dc49e1c6fcc4c79f7c0ec8004c054c4c6480ccbaf3e655132e683f452bd
+@userId=user_voi4fn3ah4hfp2w2e49xjgjs
+
+
+###
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "username":"phantomknight287",
+    "password":"password",
+    "masterkey": "{{masterkey}}"
+}
+
+
+###
+POST {{url}}/auth/sign-up
+Content-Type: application/json
+
+{
+    "username":"phantomknight287",
+    "password":"password",
+    "name":"Gurpal Singh"
+}
+
+###
+GET {{url}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfZHpveno4M3Uyb3pvZGhpaHF3bzVuazduIiwiaWF0IjoxNzE1MjM5MzYwfQ.mbrb71K8ltLK3nZKh6ZuF2wIHwmriw8vkE1sBee_0xM
+
+###
+GET {{url}}
+Authorization: Bearer incorrect_token
+
