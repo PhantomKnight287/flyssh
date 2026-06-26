@@ -10,7 +10,7 @@ final dio = Dio(
         ? Platform.isMacOS
               ? 'http://localhost:8080'
               : 'http://192.168.1.9:8080'
-        : 'https://api.flyssh.com',
+        : 'https://flyssh.procrastinator.fyi',
   ),
 );
 
